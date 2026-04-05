@@ -301,8 +301,8 @@ body {
   <!-- Header: greeting left, weather right -->
   <div class="header">
     <div class="header-left">
-      <div class="header-greeting" id="greeting">Good afternoon</div>
-      <div class="header-name">Le <span>Zheng</span></div>
+      <div class="header-greeting" id="greeting">下午好</div>
+      <div class="header-name">程乐正</div>
     </div>
     <div class="header-right">
       <div class="header-weather" id="weatherIcon">🌤</div>
@@ -392,7 +392,7 @@ updateClock();
 // ── Greeting ──
 function updateGreeting() {
   var h = new Date().getHours();
-  var t = h < 6 ? 'Good night' : h < 9 ? 'Good morning' : h < 12 ? 'Good morning' : h < 14 ? 'Good noon' : h < 18 ? 'Good afternoon' : h < 22 ? 'Good evening' : 'Good night';
+  var t = h < 6 ? '凌晨好' : h < 9 ? '早上好' : h < 12 ? '上午好' : h < 14 ? '中午好' : h < 18 ? '下午好' : h < 22 ? '晚上好' : '夜深了';
   document.getElementById('greeting').textContent = t;
 }
 updateGreeting();
