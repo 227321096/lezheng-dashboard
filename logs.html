@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运行日志</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #3b82f6;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 16px;
+}
+
+body {
+  font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  user-select: none;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.header-left {}
+.back-btn {
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.back-btn:hover { text-decoration: underline; }
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.page-title span { color: var(--accent); }
+.header-right {}
+.header-date {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ── Summary ── */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.summary-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.summary-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.summary-label {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Date Filter ── */
+.date-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.date-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.date-btn.active, .date-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ── Log Entry ── */
+.log-section { margin-bottom: 8px; }
+.log-date-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.log-entry {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.log-entry:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.log-time {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.log-type {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.log-type.done { background: rgba(34,197,94,0.1); color: #16a34a; }
+.log-type.task { background: rgba(59,130,246,0.1); color: var(--accent); }
+.log-type.note { background: rgba(168,85,247,0.1); color: #9333ea; }
+.log-type.error { background: rgba(239,68,68,0.1); color: #dc2626; }
+.log-content {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.log-empty {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 40px 0;
+}
+
+/* ── Add Log ── */
+.add-log-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.add-log-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.add-log-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  resize: none;
+  rows: 3;
+  transition: border-color 0.2s;
+}
+.add-log-input:focus { border-color: var(--accent); }
+.add-log-input::placeholder { color: var(--muted); }
+.add-log-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  align-items: center;
+}
+.type-select {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+.add-btn {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+.add-btn:hover { background: #2563eb; }
+</style>
+</head>
+<body>
+
+<div class="content">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <a class="back-btn" href="index.html">← 返回主页</a>
+      <div class="page-title">运行<span>日志</span></div>
+    </div>
+    <div class="header-right">
+      <div class="header-date" id="today"></div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="summary-num" id="totalCount">0</div>
+      <div class="summary-label">总记录</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-num" id="doneCount">0</div>
+      <div class="summary-label">已完成</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-num" id="todayCount">0</div>
+      <div class="summary-label">今日</div>
+    </div>
+  </div>
+
+  <!-- Add log -->
+  <div class="add-log-card">
+    <div class="add-log-title">添加记录</div>
+    <textarea class="add-log-input" id="logInput" placeholder="记录今天的完成事项、想法、待办..." rows="3"></textarea>
+    <div class="add-log-row">
+      <select class="type-select" id="logType">
+        <option value="done">✅ 完成</option>
+        <option value="task">📋 任务</option>
+        <option value="note">📝 笔记</option>
+        <option value="error">❌ 问题</option>
+      </select>
+      <button class="add-btn" onclick="addLog()">添加</button>
+    </div>
+  </div>
+
+  <!-- Logs list -->
+  <div id="logsList"></div>
+
+</div>
+
+<script>
+var LOG_KEY = 'dashLogs';
+
+function getLogs() {
+  return JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+}
+
+function saveLogs(logs) {
+  localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+}
+
+function addLog() {
+  var text = document.getElementById('logInput').value.trim();
+  if (!text) return;
+  var type = document.getElementById('logType').value;
+  var now = new Date();
+  var log = {
+    id: Date.now(),
+    type: type,
+    text: text,
+    time: now.toTimeString().substring(0,5),
+    date: now.toLocaleDateString('zh-CN'),
+    ts: now.getTime()
+  };
+  var logs = getLogs();
+  logs.unshift(log);
+  saveLogs(logs);
+  document.getElementById('logInput').value = '';
+  renderLogs();
+  updateSummary();
+}
+
+function deleteLog(id) {
+  var logs = getLogs().filter(l => l.id !== id);
+  saveLogs(logs);
+  renderLogs();
+  updateSummary();
+}
+
+function updateSummary() {
+  var logs = getLogs();
+  var today = new Date().toLocaleDateString('zh-CN');
+  document.getElementById('totalCount').textContent = logs.length;
+  document.getElementById('doneCount').textContent = logs.filter(l => l.type === 'done').length;
+  document.getElementById('todayCount').textContent = logs.filter(l => l.date === today).length;
+}
+
+function renderLogs() {
+  var logs = getLogs();
+  var today = new Date().toLocaleDateString('zh-CN');
+  var yesterday = new Date(Date.now() - 86400000).toLocaleDateString('zh-CN');
+  document.getElementById('today').textContent = today;
+
+  if (logs.length === 0) {
+    document.getElementById('logsList').innerHTML = '<div class="log-empty">还没有记录，从上面添加第一条吧~</div>';
+    return;
+  }
+
+  var html = '';
+  var currentDate = '';
+  logs.forEach(function(log) {
+    if (log.date !== currentDate) {
+      currentDate = log.date;
+      var label = currentDate === today ? '今天' : currentDate === yesterday ? '昨天' : currentDate;
+      html += '<div class="log-date-header">' + label + ' · ' + currentDate + '</div>';
+    }
+    var typeLabel = {done:'完成',task:'任务',note:'笔记',error:'问题'}[log.type];
+    html += '<div class="log-entry" onclick="if(confirm(\\'删除这条记录?\\')) deleteLog(' + log.id + ')">';
+    html += '<div class="log-time">' + log.time + ' <span class="log-type ' + log.type + '">' + typeLabel + '</span></div>';
+    html += '<div class="log-content">' + log.text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    html += '</div>';
+  });
+  document.getElementById('logsList').innerHTML = html;
+}
+
+// Init
+document.getElementById('today').textContent = new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'});
+renderLogs();
+updateSummary();
+</script>
+</body>
+</html>
