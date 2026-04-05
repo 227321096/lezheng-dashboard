@@ -10,13 +10,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px rgba(139, 92, 246, 0.08);
+  --glass-shadow-hover: 0 16px 48px rgba(139, 92, 246, 0.15);
   --accent-blue: #60a5fa;
   --accent-pink: #f472b6;
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-muted: rgba(255, 255, 255, 0.55);
+  --text-primary: #1e1b4b;
+  --text-muted: rgba(30, 27, 75, 0.5);
 }
 
 body {
@@ -30,10 +31,11 @@ body {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(96, 165, 250, 0.5) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 50% at 80% 80%, rgba(244, 114, 182, 0.45) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 80% at 60% 10%, rgba(192, 132, 252, 0.35) 0%, transparent 60%),
-    linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d6b 60%, #1e1140 100%);
+    radial-gradient(ellipse 90% 70% at 10% 5%, rgba(147, 197, 253, 0.7) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 90% 95%, rgba(252, 165, 165, 0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 15%, rgba(192, 132, 252, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 15% 85%, rgba(244, 114, 182, 0.25) 0%, transparent 50%),
+    linear-gradient(160deg, #f0f4ff 0%, #fdf2f8 40%, #faf5ff 70%, #fff 100%);
 }
 
 .content {
@@ -46,8 +48,8 @@ body {
 
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   box-shadow: var(--glass-shadow);
@@ -60,7 +62,7 @@ body {
   justify-content: space-between;
   margin-bottom: 32px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(139,92,246,0.1);
 }
 .back-btn {
   font-size: 12px;
@@ -72,7 +74,7 @@ body {
   gap: 4px;
   margin-bottom: 8px;
 }
-.back-btn:hover { opacity: 0.75; }
+.back-btn:hover { opacity: 0.7; }
 .page-title {
   font-size: 26px;
   font-weight: 800;
@@ -105,7 +107,8 @@ body {
   transition: all 0.25s ease;
 }
 .summary-card:hover {
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.72);
+  box-shadow: var(--glass-shadow-hover);
   transform: translateY(-2px);
 }
 .summary-num {
@@ -133,8 +136,8 @@ body {
   flex-wrap: wrap;
 }
 .date-btn {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.7);
   border-radius: 20px;
   padding: 5px 14px;
   font-size: 11px;
@@ -147,6 +150,7 @@ body {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
   color: #fff;
   border-color: transparent;
+  box-shadow: 0 4px 14px rgba(96,165,250,0.3);
 }
 
 /* ── Log Entry ── */
@@ -158,7 +162,7 @@ body {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   padding: 14px 0 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(139,92,246,0.08);
   margin-bottom: 10px;
 }
 .log-entry {
@@ -168,7 +172,8 @@ body {
   cursor: pointer;
 }
 .log-entry:hover {
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.72);
+  box-shadow: var(--glass-shadow-hover);
   transform: translateY(-1px);
 }
 .log-time {
@@ -188,10 +193,10 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.log-type.done { background: rgba(34,197,94,0.2); color: #4ade80; }
-.log-type.task { background: rgba(96,165,250,0.2); color: var(--accent-blue); }
-.log-type.note { background: rgba(192,132,252,0.2); color: #c084fc; }
-.log-type.error { background: rgba(239,68,68,0.2); color: #f87171; }
+.log-type.done { background: rgba(34,197,94,0.12); color: #16a34a; }
+.log-type.task { background: rgba(96,165,250,0.12); color: #2563eb; }
+.log-type.note { background: rgba(192,132,252,0.12); color: #9333ea; }
+.log-type.error { background: rgba(239,68,68,0.1); color: #dc2626; }
 .log-content {
   font-size: 13px;
   color: var(--text-primary);
@@ -220,8 +225,8 @@ body {
 }
 .add-log-input {
   width: 100%;
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(139,92,246,0.15);
   border-radius: 14px;
   padding: 12px 16px;
   font-size: 12px;
@@ -229,9 +234,12 @@ body {
   color: var(--text-primary);
   outline: none;
   resize: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.add-log-input:focus { border-color: var(--accent-blue); }
+.add-log-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(96,165,250,0.12);
+}
 .add-log-input::placeholder { color: var(--text-muted); }
 .add-log-row {
   display: flex;
@@ -240,8 +248,8 @@ body {
   align-items: center;
 }
 .type-select {
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(139,92,246,0.15);
   border-radius: 12px;
   padding: 9px 12px;
   font-size: 11px;
@@ -250,7 +258,7 @@ body {
   outline: none;
   cursor: pointer;
 }
-.type-select option { background: #1e1b4b; }
+.type-select option { background: #f0f4ff; }
 .add-btn {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
   border: none;
@@ -264,7 +272,11 @@ body {
   transition: all 0.2s;
   margin-left: auto;
 }
-.add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.add-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(96,165,250,0.35);
+}
 </style>
 </head>
 <body>
@@ -353,7 +365,7 @@ function addLog() {
 }
 
 function deleteLog(id) {
-  var logs = getLogs().filter(l => l.id !== id);
+  var logs = getLogs().filter(function(l) { return l.id !== id; });
   saveLogs(logs);
   renderLogs();
   updateSummary();
@@ -363,8 +375,8 @@ function updateSummary() {
   var logs = getLogs();
   var today = new Date().toLocaleDateString('zh-CN');
   document.getElementById('totalCount').textContent = logs.length;
-  document.getElementById('doneCount').textContent = logs.filter(l => l.type === 'done').length;
-  document.getElementById('todayCount').textContent = logs.filter(l => l.date === today).length;
+  document.getElementById('doneCount').textContent = logs.filter(function(l) { return l.type === 'done'; }).length;
+  document.getElementById('todayCount').textContent = logs.filter(function(l) { return l.date === today; }).length;
 }
 
 function renderLogs() {
