@@ -5,201 +5,249 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
 :root {
-  --pink: #ff69b4;
-  --pink-light: #ffb3d9;
-  --pink-dark: #c2185b;
-  --purple: #b090c0;
-  --purple-dark: #8a7a9a;
-  --bg: #ffeef8;
-  --card: rgba(255,255,255,0.7);
-  --card-hover: rgba(255,255,255,0.9);
-  --text: #6a5a7a;
-  --text-light: #b0a0c0;
-  --shadow: 0 4px 20px rgba(255,150,200,0.2);
-  --shadow-hover: 0 8px 30px rgba(255,150,200,0.35);
-  --radius: 20px;
+  /* ── Minimalist Design System Tokens ── */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(59,130,246,0.12);
+  --radius: 16px;
 }
+
 body {
+  font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
-  background: linear-gradient(160deg, #fff5fb 0%, #ffe4f2 40%, #fce4ec 70%, #fff9fb 100%);
   overflow: hidden;
   user-select: none;
-  color: var(--text);
-  border-radius: 24px;
-  clip-path: inset(0 round 24px);
 }
-.content { padding: 48px 14px 38px; height: 100vh; overflow-y: auto; }
 
-/* ===================== HERO ===================== */
-.hero {
-  text-align: center;
-  padding: 8px 0 10px;
-  position: relative;
+.content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 24px 40px;
+  height: 100vh;
+  overflow-y: auto;
 }
-.hero-greeting {
+
+/* ── Top bar ── */
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+.topbar-left {}
+.greeting {
   font-size: 13px;
-  color: var(--purple-dark);
-  margin-bottom: 2px;
-  letter-spacing: 1px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }
-.hero-name {
-  font-size: 42px;
+.name {
+  font-size: 32px;
   font-weight: 800;
-  line-height: 1.05;
-  background: linear-gradient(125deg, #ff69b4 0%, #ff1493 30%, #b03ab0 60%, #ff69b4 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 4s linear infinite;
+  color: var(--text);
   letter-spacing: -1px;
+  line-height: 1;
 }
-@keyframes shimmer {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+.name span { color: var(--accent); }
+.topbar-right {
+  text-align: right;
+  padding-top: 4px;
 }
-.hero-sub {
-  font-size: 12px;
-  color: var(--purple-dark);
-  opacity: 0.7;
-  margin-top: 2px;
+.weather-icon { font-size: 28px; line-height: 1; margin-bottom: 2px; }
+.weather-temp { font-size: 20px; font-weight: 700; color: var(--text); }
+.weather-loc { font-size: 11px; color: var(--muted); }
+
+/* ── Clock ── */
+.clock-section { margin-bottom: 40px; }
+.clock-main {
+  font-size: 80px;
+  font-weight: 200;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -4px;
+  font-variant-numeric: tabular-nums;
+}
+.clock-sec {
+  font-size: 28px;
+  font-weight: 200;
+  color: var(--muted);
+  vertical-align: super;
+  letter-spacing: -1px;
+  margin-left: 2px;
+}
+.clock-date {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 10px;
+  letter-spacing: 0.5px;
 }
 
-/* ===================== TIME CARD ===================== */
-.time-card {
-  background: var(--card);
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin-bottom: 32px;
+}
+
+/* ── Info Row ── */
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.info-card {
+  background: var(--surface);
   border-radius: var(--radius);
-  padding: 14px 20px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all 0.25s ease;
+}
+.info-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.info-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.info-value { font-size: 14px; font-weight: 600; color: var(--text); }
+.info-icon { font-size: 18px; margin-bottom: 6px; }
+
+/* ── Quote ── */
+.quote-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+}
+.quote-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+  font-style: normal;
+}
+.quote-author {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── Memo ── */
+.memo-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.memo-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.memo-input-row {
+  display: flex;
+  gap: 8px;
+}
+.memo-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.memo-input:focus { border-color: var(--accent); }
+.memo-input::placeholder { color: var(--muted); }
+.memo-btn {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.memo-btn:hover { background: #2563eb; transform: translateY(-1px); }
+.memo-list { margin-top: 10px; }
+.memo-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text);
 }
-.time-left { display: flex; flex-direction: column; }
-.time { font-size: 44px; font-weight: 200; color: var(--pink-dark); line-height: 1; letter-spacing: -2px; }
-.date { font-size: 11px; color: var(--purple-dark); margin-top: 4px; opacity: 0.8; letter-spacing: 0.5px; }
-.time-right { text-align: right; }
-.weekday { font-size: 22px; font-weight: 600; color: var(--pink); }
-.weekday-label { font-size: 10px; color: var(--purple-dark); opacity: 0.7; }
-
-/* ===================== DIVIDER ===================== */
-.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--pink-light), transparent); margin: 8px 0; }
-
-/* ===================== INFO ROW ===================== */
-.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-.info-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  transition: all 0.25s;
-}
-.info-card:hover { background: var(--card-hover); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-.info-card:active { transform: translateY(0); }
-.info-label { font-size: 10px; color: var(--text-light); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
-.info-value { font-size: 18px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; }
-.info-value.sm { font-size: 14px; }
-.weather-card-full { background: var(--card); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; }
-.weather-icon-lg { font-size: 40px; line-height: 1; }
-.weather-detail { flex: 1; }
-.weather-main { font-size: 28px; font-weight: 700; color: var(--purple-dark); line-height: 1; }
-.weather-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
-.weather-meta { font-size: 11px; color: var(--purple-dark); opacity: 0.7; }
-
-/* ===================== QUOTE ===================== */
-.quote-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-.quote-text { font-size: 13px; line-height: 1.7; color: var(--text); font-style: italic; }
-.quote-author { font-size: 10px; color: var(--text-light); margin-top: 4px; }
-
-/* ===================== QUICK LINKS ===================== */
-.section-title { font-size: 11px; font-weight: 600; color: var(--text-light); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
-.links-section { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
-.link-card {
-  background: var(--card);
-  border-radius: 14px;
-  padding: 10px 4px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s;
-  box-shadow: 0 2px 10px rgba(200,180,220,0.12);
-  text-decoration: none;
-  display: block;
-}
-.link-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); background: var(--card-hover); }
-.link-card:active { transform: translateY(0); }
-.link-icon { font-size: 22px; display: block; margin-bottom: 3px; }
-.link-name { font-size: 10px; color: var(--purple-dark); font-weight: 500; }
-
-/* ===================== POMODORO ===================== */
-.pomo-section { background: var(--card); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
-.pomo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.pomo-title { font-size: 12px; font-weight: 600; color: var(--purple-dark); display: flex; align-items: center; gap: 4px; }
-.pomo-modes { display: flex; gap: 4px; }
-.pomo-mode-btn { background: rgba(200,180,220,0.2); border: none; color: var(--purple-dark); font-size: 10px; padding: 3px 9px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
-.pomo-mode-btn.active { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); color: #fff; }
-.pomo-mode-btn:hover:not(.active) { background: rgba(200,180,220,0.4); }
-.pomo-display { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px; }
-.pomo-ring-wrap { position: relative; width: 88px; height: 88px; }
-.pomo-ring { transform: rotate(-90deg); }
-.pomo-ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
-.pomo-ring-bg { stroke: rgba(200,180,220,0.25); }
-.pomo-ring-progress { stroke: url(#pomoGrad); transition: stroke-dashoffset 1s linear; }
-.pomo-time { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.pomo-time-num { font-size: 20px; font-weight: 200; color: var(--purple-dark); line-height: 1; }
-.pomo-time-label { font-size: 9px; color: var(--text-light); margin-top: 2px; }
-.pomo-controls { display: flex; gap: 8px; justify-content: center; }
-.pomo-btn { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); border: none; color: #fff; font-size: 11px; padding: 6px 18px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
-.pomo-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(255,150,200,0.3); }
-.pomo-btn.reset { background: rgba(200,180,220,0.3); color: var(--purple-dark); }
-.pomo-btn.reset:hover { background: rgba(200,180,220,0.5); box-shadow: none; }
-.pomo-sessions { text-align: center; font-size: 10px; color: var(--text-light); margin-top: 6px; }
-
-/* ===================== MEMO ===================== */
-.memo-section { background: var(--card); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
-.memo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.memo-title { font-size: 12px; font-weight: 600; color: var(--purple-dark); display: flex; align-items: center; gap: 4px; }
-.memo-add-btn { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); border: none; color: #fff; font-size: 10px; padding: 3px 10px; border-radius: 20px; cursor: pointer; }
-.memo-list { max-height: 100px; overflow-y: auto; }
-.memo-item { display: flex; align-items: flex-start; gap: 7px; padding: 5px 0; border-bottom: 1px solid rgba(200,180,220,0.1); }
 .memo-item:last-child { border-bottom: none; }
-.memo-check { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--purple); cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; transition: all 0.2s; }
-.memo-check.done { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); border-color: transparent; }
-.memo-text { font-size: 12px; color: var(--text); line-height: 1.5; flex: 1; cursor: pointer; }
-.memo-text.done { text-decoration: line-through; color: var(--text-light); }
-.memo-input-row { display: flex; gap: 6px; margin-top: 6px; }
-.memo-input { flex: 1; background: rgba(255,255,255,0.8); border: 1.5px solid rgba(200,180,220,0.3); border-radius: 10px; padding: 5px 10px; font-size: 11px; color: var(--text); outline: none; }
-.memo-input:focus { border-color: var(--pink); }
-.memo-input-submit { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); border: none; color: #fff; font-size: 11px; padding: 5px 10px; border-radius: 10px; cursor: pointer; }
-.memo-empty { text-align: center; font-size: 11px; color: var(--text-light); padding: 6px 0; }
+.memo-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #fff;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.memo-check.done { background: var(--accent); border-color: var(--accent); }
+.memo-text { flex: 1; cursor: pointer; line-height: 1.5; }
+.memo-text.done { text-decoration: line-through; color: var(--muted); }
+.memo-empty { text-align: center; font-size: 11px; color: var(--muted); padding: 8px 0; }
 
-/* ===================== STATUS BAR ===================== */
-.status-bar { padding: 6px 10px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--text-light); box-shadow: var(--shadow); margin-bottom: 6px; }
-.status-left { display: flex; align-items: center; gap: 5px; }
-.status-dot { width: 5px; height: 5px; background: #7ed47e; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.status-btn { background: linear-gradient(135deg, var(--pink-light), #b3d9ff); border: none; color: #fff; font-size: 10px; padding: 3px 8px; border-radius: 20px; cursor: pointer; }
-
-/* ===================== PARTICLES ===================== */
+/* ── Particles ── */
 .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.particle { position: absolute; animation: floatUp linear infinite; opacity: 0; filter: blur(0.5px); }
-@keyframes floatUp { 0% { transform: translateY(105vh) rotate(0deg) scale(0.5); opacity: 0; } 8% { opacity: 0.85; transform: translateY(90vh) rotate(45deg) scale(1); } 90% { opacity: 0.7; } 100% { transform: translateY(-15vh) rotate(720deg) scale(0.3); opacity: 0; } }
-
-/* scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: rgba(200,180,220,0.3); border-radius: 4px; }
+.particle {
+  position: absolute;
+  animation: floatUp linear infinite;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(59,130,246,0.15));
+}
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
 </style>
 </head>
 <body>
@@ -208,225 +256,154 @@ body {
 
 <div class="content">
 
-  <!-- HERO: 大标题问候 -->
-  <div class="hero">
-    <div class="hero-greeting" id="greeting">下午好</div>
-    <div class="hero-name">程乐正</div>
-    <div class="hero-sub" id="heroSub">每一天都值得期待 ✨</div>
+  <!-- Top bar: greeting left, weather right -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="greeting" id="greeting">下午好</div>
+      <div class="name">程乐<span>正</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="weather-icon" id="weatherIcon">🌤️</div>
+      <div class="weather-temp" id="weatherTemp">--°</div>
+      <div class="weather-loc" id="weatherLoc">江西</div>
+    </div>
   </div>
 
-  <!-- 时间卡片 -->
-  <div class="time-card">
-    <div class="time-left">
-      <div class="time" id="clock">--:--:--</div>
-      <div class="date" id="date">----/--/--</div>
+  <!-- Clock -->
+  <div class="clock-section">
+    <div class="clock-main">
+      <span id="clockTime">--:--</span><span class="clock-sec" id="clockSec">--</span>
     </div>
-    <div class="time-right">
-      <div class="weekday" id="weekday">三</div>
-      <div class="weekday-label">星期</div>
-    </div>
+    <div class="clock-date" id="clockDate">----年--月--日 星期--</div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- 天气 + IP -->
-  <div class="weather-card-full" id="weatherCard">
-    <div class="weather-icon-lg" id="weatherIcon">☀️</div>
-    <div class="weather-detail">
-      <div class="weather-main" id="weatherTemp">--°</div>
-      <div class="weather-sub" id="weatherCondition">加载中...</div>
-      <div class="weather-meta" id="weatherMeta">--</div>
+  <!-- Info row -->
+  <div class="info-row">
+    <div class="info-card">
+      <div class="info-icon">📍</div>
+      <div class="info-label">位置</div>
+      <div class="info-value" id="ipInfo">--</div>
     </div>
-    <div style="text-align:right">
-      <div class="info-value sm" id="ipAddr">--</div>
-      <div class="info-label" id="ipLoc">IP 定位</div>
+    <div class="info-card">
+      <div class="info-icon">🗓</div>
+      <div class="info-label">日期</div>
+      <div class="info-value" id="todayInfo">--</div>
     </div>
   </div>
 
-  <!-- 名言 -->
+  <!-- Quote -->
   <div class="quote-card">
     <div class="quote-text" id="quote">"loading..."</div>
-    <div class="quote-author" id="author"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
   </div>
 
-  <!-- 快捷链接 -->
-  <div class="section-title">快捷</div>
-  <div class="links-section">
-    <a class="link-card" href="https://github.com" target="_blank">
-      <span class="link-icon">🐱</span><span class="link-name">GitHub</span>
-    </a>
-    <a class="link-card" href="https://mail.google.com" target="_blank">
-      <span class="link-icon">📧</span><span class="link-name">邮箱</span>
-    </a>
-    <a class="link-card" href="https://chat.deepseek.com" target="_blank">
-      <span class="link-icon">🤖</span><span class="link-name">DeepSeek</span>
-    </a>
-    <a class="link-card" href="https://www.notion.so" target="_blank">
-      <span class="link-icon">📝</span><span class="link-name">Notion</span>
-    </a>
+  <!-- Logs link -->
+  <div class="memo-card">
+    <div class="memo-title">📊 每日日志</div>
+    <div style="padding: 4px 0 2px;">
+      <a href="logs.html" class="memo-btn" style="display:inline-block;text-decoration:none;color:#fff;background:var(--accent);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;">查看运行日志 →</a>
+    </div>
   </div>
 
-  <!-- 番茄钟 -->
-  <div class="pomo-section">
-    <div class="pomo-header">
-      <span class="pomo-title">🍅 专注</span>
-      <div class="pomo-modes">
-        <button class="pomo-mode-btn active" id="mode25" onclick="setPomoMode(25,0)">专注25</button>
-        <button class="pomo-mode-btn" id="mode5" onclick="setPomoMode(5,1)">短休5</button>
-        <button class="pomo-mode-btn" id="mode15" onclick="setPomoMode(15,2)">长休15</button>
-      </div>
-    </div>
-    <div class="pomo-display">
-      <div class="pomo-ring-wrap">
-        <svg class="pomo-ring" width="88" height="88" viewBox="0 0 90 90">
-          <defs>
-            <linearGradient id="pomoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#ffb3d9"/>
-              <stop offset="100%" stop-color="#b3d9ff"/>
-            </linearGradient>
-          </defs>
-          <circle class="pomo-ring-bg" cx="45" cy="45" r="38"/>
-          <circle class="pomo-ring-progress" id="pomoProgress" cx="45" cy="45" r="38" stroke-dasharray="238.76" stroke-dashoffset="0"/>
-        </svg>
-        <div class="pomo-time">
-          <span class="pomo-time-num" id="pomoTime">25:00</span>
-          <span class="pomo-time-label" id="pomoLabel">专注中</span>
-        </div>
-      </div>
-    </div>
-    <div class="pomo-controls">
-      <button class="pomo-btn" id="pomoStartBtn" onclick="togglePomo()">▶ 开始</button>
-      <button class="pomo-btn reset" onclick="resetPomo()">↺ 重置</button>
-    </div>
-    <div class="pomo-sessions" id="pomoSessions">今日已完成 0 个番茄</div>
-  </div>
-
-  <!-- 状态栏 -->
-  <div class="status-bar">
-    <div class="status-left"><span class="status-dot"></span><span id="statusText">已同步</span></div>
-    <button class="status-btn" onclick="refreshAll()">刷新</button>
-  </div>
-
-  <!-- 备忘 -->
-  <div class="memo-section">
-    <div class="memo-header">
-      <span class="memo-title">📝 备忘</span>
-      <button class="memo-add-btn" onclick="showMemoInput()">+ 添加</button>
-    </div>
+  <!-- Memo -->
+  <div class="memo-card">
+    <div class="memo-title">备忘</div>
     <div class="memo-list" id="memoList"></div>
-    <div class="memo-input-row" id="memoInputRow" style="display:none;">
-      <input class="memo-input" id="memoInput" placeholder="写点什么..." onkeydown="if(event.keyCode===13)addMemo()">
-      <button class="memo-input-submit" onclick="addMemo()">✓</button>
+    <div class="memo-input-row">
+      <input class="memo-input" id="memoInput" placeholder="写点什么..." onkeydown="if(event.key==='Enter')addMemo()">
+      <button class="memo-btn" onclick="addMemo()">添加</button>
     </div>
   </div>
 
 </div>
 
 <script>
-var lastRefresh = new Date();
-var memos = [];
-var quotes = [
-  ['代码是写给人读的，顺便让机器运行。', 'Donald Knuth'],
-  ['大道至简，复杂的系统往往来自简单的想法的堆积。', 'Richard Feynman'],
-  ['行动胜于分析。', 'Jeff Bezos'],
-  ['保持简单，让复杂性自然产生，而不是人为制造。', 'John Maeda'],
-  ['最好的代码就是没有代码。', 'Jeff Atwood'],
-  ['简单是终极的复杂。', 'Leonardo da Vinci'],
-];
-
-function tf(v) { return v < 10 ? '0' + v : '' + v; }
+/* ── Clock ── */
 function updateClock() {
   var now = new Date();
-  document.getElementById('clock').textContent = tf(now.getHours()) + ':' + tf(now.getMinutes()) + ':' + tf(now.getSeconds());
-  document.getElementById('date').textContent = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
+  var h = String(now.getHours()).padStart(2,'0');
+  var m = String(now.getMinutes()).padStart(2,'0');
+  var s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clockTime').textContent = h + ':' + m;
+  document.getElementById('clockSec').textContent = s;
   var days = ['日','一','二','三','四','五','六'];
-  document.getElementById('weekday').textContent = days[now.getDay()];
-  var el = Math.floor((now - lastRefresh) / 1000);
-  document.getElementById('statusText').textContent = el < 60 ? el + '秒前刷新' : Math.floor(el/60) + '分钟前刷新';
+  document.getElementById('clockDate').textContent =
+    now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 星期' + days[now.getDay()];
 }
 setInterval(updateClock, 1000);
 updateClock();
 
+/* ── Greeting ── */
 function updateGreeting() {
   var h = new Date().getHours();
   var t = h < 6 ? '凌晨好' : h < 9 ? '早上好' : h < 12 ? '上午好' : h < 14 ? '中午好' : h < 18 ? '下午好' : h < 22 ? '晚上好' : '夜深了';
-  var subs = ['每一天都值得期待 ✨', '今天也要元气满满 🌸', '加油，效率翻倍 🚀', '专注当下，逐个击破 💪', '保持热爱，持续进步 🔥'];
   document.getElementById('greeting').textContent = t;
-  document.getElementById('heroSub').textContent = subs[Math.floor(Math.random() * subs.length)];
 }
 updateGreeting();
 
+/* ── IP Location ── */
 async function fetchIP() {
   try {
-    var r = await fetch('https://ipapi.co/json/');
+    var r = await fetch('https://ipinfo.io/json');
     var d = await r.json();
-    document.getElementById('ipAddr').textContent = d.ip || '--';
-    document.getElementById('ipLoc').textContent = d.city ? (d.city + ', ' + d.country_name) : '--';
+    document.getElementById('ipInfo').textContent = d.city ? (d.city + ', ' + d.country) : d.ip;
+    document.getElementById('todayInfo').textContent = new Date().toLocaleDateString('zh-CN', {month:'2-digit',day:'2-digit'});
   } catch(e) {
-    try {
-      var r2 = await fetch('https://ipinfo.io/json');
-      var d2 = await r2.json();
-      document.getElementById('ipAddr').textContent = d2.ip || '--';
-      document.getElementById('ipLoc').textContent = d2.city ? (d2.city + ', ' + d2.country) : '--';
-    } catch(e2) {
-      document.getElementById('ipAddr').textContent = '--';
-    }
+    document.getElementById('ipInfo').textContent = '无法获取';
+    document.getElementById('todayInfo').textContent = new Date().toLocaleDateString('zh-CN', {month:'2-digit',day:'2-digit'});
   }
 }
 fetchIP();
 
+/* ── Weather (Jiangxi) ── */
 async function fetchWeather() {
   try {
-    var r = await fetch('https://wttr.in/?format=%c+%t+%C+%h&lang=zh');
+    var r = await fetch('https://wttr.in/Jiangxi?format=%c+%t+%C&lang=zh');
     var t = await r.text();
     var parts = t.trim().split(/\s+/);
     document.getElementById('weatherIcon').textContent = parts[0] || '☀️';
     document.getElementById('weatherTemp').textContent = (parts[1] || '+26').replace('C','') + '°';
-    document.getElementById('weatherCondition').textContent = parts[2] || '晴';
-    document.getElementById('weatherMeta').textContent = '湿度: ' + (parts[3] || '57%');
+    document.getElementById('weatherLoc').textContent = parts[2] || '江西';
   } catch(e) {
-    document.getElementById('weatherIcon').textContent = '☀️';
     document.getElementById('weatherTemp').textContent = '+26°';
-    document.getElementById('weatherCondition').textContent = '晴';
   }
 }
 fetchWeather();
 
-function refreshAll() {
-  lastRefresh = new Date();
-  updateGreeting();
-  fetchIP();
-  fetchWeather();
-  var q2 = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById('quote').textContent = '"' + q2[0] + '"';
-  document.getElementById('author').textContent = '— ' + q2[1];
-  document.getElementById('statusText').textContent = '已同步';
-}
-
+/* ── Quote ── */
+var quotes = [
+  ['代码是写给人读的，顺便让机器运行。', 'Donald Knuth'],
+  ['大道至简，复杂的系统往往来自简单的想法的堆积。', 'Richard Feynman'],
+  ['行动胜于分析。', 'Jeff Bezos'],
+  ['最好的代码就是没有代码。', 'Jeff Atwood'],
+  ['简单是终极的复杂。', 'Leonardo da Vinci'],
+  ['保持简单，让复杂性自然产生。', 'John Maeda'],
+];
 var qi = quotes[Math.floor(Math.random() * quotes.length)];
 document.getElementById('quote').textContent = '"' + qi[0] + '"';
-document.getElementById('author').textContent = '— ' + qi[1];
+document.getElementById('quoteAuthor').textContent = '— ' + qi[1];
 
-/* particles */
-var shapes = ['🐷','💗','✨','🌸','💕','🎀','💫','🌷','🐽'];
-for (var i = 0; i < 18; i++) {
+/* ── Particles ── */
+var shapes = ['✨','🧊','💠','🔵','🌊','🪐'];
+for (var i = 0; i < 12; i++) {
   var p = document.createElement('div');
-  var types = ['heart','star','flower'];
   p.className = 'particle';
   p.textContent = shapes[Math.floor(Math.random() * shapes.length)];
   p.style.left = Math.random() * 100 + '%';
-  p.style.fontSize = (12 + Math.random() * 18) + 'px';
-  p.style.animationDuration = (12 + Math.random() * 18) + 's';
-  p.style.animationDelay = Math.random() * 15 + 's';
-  p.style.filter = 'drop-shadow(0 0 4px rgba(255,105,180,0.4))';
+  p.style.fontSize = (12 + Math.random() * 12) + 'px';
+  p.style.animationDuration = (12 + Math.random() * 14) + 's';
+  p.style.animationDelay = Math.random() * 12 + 's';
   document.getElementById('particles').appendChild(p);
 }
 
-/* memos */
-function loadMemos() { memos = JSON.parse(localStorage.getItem('memos') || '[]'); renderMemos(); }
+/* ── Memo ── */
+var memos = [];
+function loadMemos() { memos = JSON.parse(localStorage.getItem('dashMemos2') || '[]'); renderMemos(); }
 function renderMemos() {
   var list = document.getElementById('memoList');
-  if (memos.length === 0) { list.innerHTML = '<div class="memo-empty">点击"添加"记录点什么~</div>'; return; }
+  if (memos.length === 0) { list.innerHTML = '<div class="memo-empty">记录点什么吧~</div>'; return; }
   var html = '';
   for (var i = 0; i < memos.length; i++) {
     var m = memos[i];
@@ -434,71 +411,16 @@ function renderMemos() {
   }
   list.innerHTML = html;
 }
-function showMemoInput() { document.getElementById('memoInputRow').style.display = 'flex'; document.getElementById('memoInput').focus(); }
 function addMemo() {
   var text = document.getElementById('memoInput').value.trim();
   if (!text) return;
   memos.push({text: text, done: false});
   document.getElementById('memoInput').value = '';
-  document.getElementById('memoInputRow').style.display = 'none';
-  localStorage.setItem('memos', JSON.stringify(memos));
+  localStorage.setItem('dashMemos2', JSON.stringify(memos));
   renderMemos();
 }
-function toggleMemo(i) { memos[i].done = !memos[i].done; localStorage.setItem('memos', JSON.stringify(memos)); renderMemos(); }
+function toggleMemo(i) { memos[i].done = !memos[i].done; localStorage.setItem('dashMemos2', JSON.stringify(memos)); renderMemos(); }
 loadMemos();
-
-/* pomodoro */
-var pomo = { total: 25*60, remaining: 25*60, running: false, interval: null, sessions: parseInt(localStorage.getItem('pomoSessions')||'0'), modeLabel: '专注中' };
-function setPomoMode(mins, labelIdx) {
-  clearInterval(pomo.interval);
-  pomo.running = false;
-  pomo.total = mins*60;
-  pomo.remaining = mins*60;
-  var labels = ['专注中','短休息','长休息'];
-  pomo.modeLabel = labels[labelIdx];
-  document.querySelectorAll('.pomo-mode-btn').forEach(function(b){b.classList.remove('active')});
-  document.getElementById('mode'+(labelIdx===0?25:labelIdx===1?5:15)).classList.add('active');
-  updatePomoDisplay();
-  document.getElementById('pomoStartBtn').textContent = '▶ 开始';
-}
-function updatePomoDisplay() {
-  var m = Math.floor(pomo.remaining/60);
-  var s = pomo.remaining % 60;
-  document.getElementById('pomoTime').textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
-  document.getElementById('pomoLabel').textContent = pomo.modeLabel;
-  var circumference = 2*Math.PI*38;
-  document.getElementById('pomoProgress').style.strokeDashoffset = circumference * (1 - pomo.remaining / pomo.total);
-  document.getElementById('pomoSessions').textContent = '今日已完成 ' + pomo.sessions + ' 个番茄';
-}
-function togglePomo() {
-  if (pomo.running) {
-    clearInterval(pomo.interval);
-    pomo.running = false;
-    document.getElementById('pomoStartBtn').textContent = '▶ 继续';
-  } else {
-    pomo.running = true;
-    document.getElementById('pomoStartBtn').textContent = '❚❚ 暂停';
-    pomo.interval = setInterval(function() {
-      if (pomo.remaining <= 0) {
-        clearInterval(pomo.interval);
-        pomo.running = false;
-        if (pomo.modeLabel === '专注中') {
-          pomo.sessions++;
-          localStorage.setItem('pomoSessions', pomo.sessions);
-          setPomoMode(5, 1);
-        } else {
-          setPomoMode(25, 0);
-        }
-        document.getElementById('pomoStartBtn').textContent = '▶ 开始';
-        return;
-      }
-      pomo.remaining--;
-      updatePomoDisplay();
-    }, 1000);
-  }
-}
-function resetPomo() { clearInterval(pomo.interval); pomo.running = false; setPomoMode(25, 0); document.getElementById('pomoStartBtn').textContent = '▶ 开始'; }
-updatePomoDisplay();
 </script>
 </body>
 </html>
