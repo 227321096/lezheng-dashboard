@@ -10,22 +10,22 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #faf7fb;
-  --card: rgba(255,255,255,0.85);
-  --border: rgba(200,180,220,0.2);
-  --text: #4a3f5a;
-  --text-muted: #9a8ab0;
-  --accent: #e879c9;
-  --accent-light: #f5d0ef;
-  --shadow: 0 2px 24px rgba(200,100,180,0.08);
-  --shadow-hover: 0 8px 32px rgba(200,100,180,0.15);
+  --bg: #f0f5ff;
+  --card: rgba(255,255,255,0.9);
+  --border: rgba(100,150,255,0.15);
+  --text: #1a2a4a;
+  --text-muted: #6a8aaa;
+  --accent: #3b82f6;
+  --accent-light: #bfdbfe;
+  --shadow: 0 2px 24px rgba(59,130,246,0.08);
+  --shadow-hover: 0 8px 32px rgba(59,130,246,0.15);
   --radius: 28px;
 }
 
 body {
   min-height: 100vh;
   font-family: 'Outfit', -apple-system, 'Segoe UI', sans-serif;
-  background: var(--bg);
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f2ff 50%, #f0f5ff 100%);
   color: var(--text);
   overflow: hidden;
   user-select: none;
@@ -39,50 +39,58 @@ body {
   overflow-y: auto;
 }
 
-/* ── Hero ── */
-.hero {
-  text-align: center;
-  margin-bottom: 28px;
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 2px;
 }
-.hero-greeting {
-  font-size: 13px;
+.header-left {}
+.header-greeting {
+  font-size: 11px;
   font-weight: 400;
   color: var(--text-muted);
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 6px;
 }
-.hero-name {
-  font-size: 36px;
+.header-name {
+  font-size: 22px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -1px;
-  line-height: 1;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
 }
-.hero-name span { color: var(--accent); }
+.header-name span { color: var(--accent); }
+.header-right {
+  text-align: right;
+}
+.header-weather { font-size: 32px; }
+.header-temp { font-size: 18px; font-weight: 600; color: var(--text); }
+.header-loc { font-size: 10px; color: var(--text-muted); }
 
 /* ── Clock ── */
 .clock-wrap {
-  text-align: center;
-  margin-bottom: 28px;
+  text-align: left;
+  margin-bottom: 24px;
+  padding: 0 4px;
 }
 .clock-time {
-  font-size: 88px;
+  font-size: 72px;
   font-weight: 200;
   color: var(--text);
   line-height: 1;
-  letter-spacing: -6px;
+  letter-spacing: -5px;
   font-variant-numeric: tabular-nums;
-  position: relative;
-  display: inline-block;
 }
 .clock-seconds {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 200;
   color: var(--text-muted);
   vertical-align: super;
-  letter-spacing: -2px;
-  margin-left: 2px;
+  letter-spacing: -1px;
+  margin-left: 3px;
 }
 .clock-date {
   font-size: 13px;
@@ -95,8 +103,8 @@ body {
 /* ── Divider ── */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
-  margin: 0 0 24px;
+  background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+  margin: 0 0 20px;
 }
 
 /* ── Card ── */
@@ -122,7 +130,7 @@ body {
 .info-card {
   background: var(--card);
   border-radius: 22px;
-  padding: 16px 18px;
+  padding: 14px 16px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   transition: all 0.3s;
@@ -134,23 +142,22 @@ body {
   color: var(--text-muted);
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
-.info-value { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1.1; }
-.info-value.lg { font-size: 28px; font-weight: 200; color: var(--text); letter-spacing: -1px; }
-.info-icon { font-size: 20px; margin-bottom: 6px; }
+.info-value { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.info-icon { font-size: 18px; margin-bottom: 4px; }
 
 /* ── Weather ── */
 .weather-card {
-  background: linear-gradient(135deg, #fff5fb 0%, #fce4ec 100%);
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.04));
   border-radius: var(--radius);
-  padding: 20px 22px;
+  padding: 18px 20px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255,182,216,0.25);
+  border: 1px solid var(--accent-light);
 }
 .weather-icon { font-size: 44px; line-height: 1; }
 .weather-temp { font-size: 42px; font-weight: 200; color: var(--text); line-height: 1; letter-spacing: -2px; }
@@ -160,9 +167,9 @@ body {
 .quote-card {
   background: var(--card);
   border-radius: var(--radius);
-  padding: 18px 22px;
+  padding: 16px 20px;
   margin-bottom: 16px;
-  border-left: 3px solid var(--accent-light);
+  border-left: 3px solid var(--accent);
   box-shadow: var(--shadow);
 }
 .quote-text {
@@ -187,7 +194,7 @@ body {
 .link-card {
   background: var(--card);
   border-radius: 18px;
-  padding: 14px 6px;
+  padding: 12px 4px;
   text-align: center;
   text-decoration: none;
   box-shadow: var(--shadow);
@@ -196,10 +203,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 .link-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-.link-icon { font-size: 22px; }
+.link-icon { font-size: 20px; }
 .link-name { font-size: 10px; color: var(--text-muted); font-weight: 500; }
 
 /* ── Memo ── */
@@ -232,6 +239,8 @@ body {
   cursor: pointer;
   transition: opacity 0.2s;
 }
+.memo-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--accent-light); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; transition: all 0.2s; }
+.memo-check.done { background: var(--accent); border-color: var(--accent); }
 .memo-submit:hover { opacity: 0.85; }
 .memo-list { margin-top: 8px; }
 .memo-item {
@@ -270,7 +279,7 @@ body {
   font-size: 14px;
   animation: rise linear infinite;
   opacity: 0;
-  filter: drop-shadow(0 0 6px rgba(232,121,201,0.3));
+  filter: drop-shadow(0 0 6px rgba(59,130,246,0.25));
 }
 @keyframes rise {
   0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
@@ -289,41 +298,39 @@ body {
 
 <div class="content">
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-greeting" id="greeting">下午好</div>
-    <div class="hero-name">程<span>乐</span>正</div>
+  <!-- Header: greeting left, weather right -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-greeting" id="greeting">下午好</div>
+      <div class="header-name">程<span>乐</span>正</div>
+    </div>
+    <div class="header-right">
+      <div class="header-weather" id="weatherIcon">🌤</div>
+      <div class="header-temp" id="weatherTemp">--°</div>
+      <div class="header-loc" id="weatherCity">定位中...</div>
+    </div>
   </div>
 
   <!-- Clock -->
   <div class="clock-wrap">
     <div class="clock-time">
-      <span id="clockHour">--</span><span class="clock-seconds" id="clockSec">--</span>
+      <span id="clockHour">--:--</span><span class="clock-seconds" id="clockSec">--</span>
     </div>
     <div class="clock-date" id="clockDate">----年--月--日</div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- Weather -->
-  <div class="weather-card">
-    <div class="weather-icon" id="weatherIcon">🌤</div>
-    <div>
-      <div class="weather-temp" id="weatherTemp">--°</div>
-      <div class="weather-city" id="weatherCity">定位中...</div>
-    </div>
-  </div>
-
   <!-- Info row: IP + Date -->
   <div class="info-row">
     <div class="info-card">
       <div class="info-icon">📍</div>
-      <div class="info-label">IP 位置</div>
+      <div class="info-label">位置</div>
       <div class="info-value" id="ipInfo">--</div>
     </div>
     <div class="info-card">
       <div class="info-icon">🗓</div>
-      <div class="info-label">今日</div>
+      <div class="info-label">日期</div>
       <div class="info-value" id="todayInfo">--</div>
     </div>
   </div>
@@ -332,6 +339,26 @@ body {
   <div class="quote-card">
     <div class="quote-text" id="quote">"loading..."</div>
     <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+
+  <!-- Links -->
+  <div class="links-grid">
+    <a class="link-card" href="https://github.com" target="_blank">
+      <span class="link-icon">🐱</span>
+      <span class="link-name">GitHub</span>
+    </a>
+    <a class="link-card" href="https://mail.google.com" target="_blank">
+      <span class="link-icon">📧</span>
+      <span class="link-name">邮箱</span>
+    </a>
+    <a class="link-card" href="https://chat.deepseek.com" target="_blank">
+      <span class="link-icon">🤖</span>
+      <span class="link-name">DeepSeek</span>
+    </a>
+    <a class="link-card" href="https://www.notion.so" target="_blank">
+      <span class="link-icon">📝</span>
+      <span class="link-name">Notion</span>
+    </a>
   </div>
 
   <!-- Links -->
@@ -414,6 +441,7 @@ async function fetchWeather() {
     document.getElementById('weatherTemp').textContent = (parts[1] || '+26').replace('C','') + '°';
     document.getElementById('weatherCity').textContent = parts[2] || '江西';
   } catch(e) {
+    document.getElementById('weatherIcon').textContent = '☀️';
     document.getElementById('weatherTemp').textContent = '+26°';
     document.getElementById('weatherCity').textContent = '江西';
   }
@@ -433,7 +461,7 @@ document.getElementById('quote').textContent = '"' + qi[0] + '"';
 document.getElementById('quoteAuthor').textContent = '— ' + qi[1];
 
 // ── Particles ──
-var shapes = ['💗','✨','🌸','💕','🎀','🐷'];
+var shapes = ['💎','✨','🧊','🌊','💠','🔵'];
 for (var i = 0; i < 14; i++) {
   var p = document.createElement('div');
   p.className = 'particle';
