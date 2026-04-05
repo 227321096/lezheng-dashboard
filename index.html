@@ -3,42 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
+<title>Dashboard · 乐正</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  /* ── Minimalist Design System Tokens ── */
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --muted: #64748b;
-  --accent: #3b82f6;
-  --accent-soft: rgba(59, 130, 246, 0.08);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 12px 32px rgba(59,130,246,0.12);
-  --radius: 16px;
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --accent-blue: #60a5fa;
+  --accent-pink: #f472b6;
+  --accent-purple: #c084fc;
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-muted: rgba(255, 255, 255, 0.6);
 }
 
 body {
   font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
   min-height: 100vh;
   overflow: hidden;
   user-select: none;
 }
 
+/* ── Background ── */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(96, 165, 250, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 80%, rgba(244, 114, 182, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 80% at 60% 10%, rgba(192, 132, 252, 0.35) 0%, transparent 60%),
+    linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d6b 60%, #1e1140 100%);
+}
+
+/* ── Particles ── */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: float linear infinite;
+  opacity: 0;
+}
+@keyframes float {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+}
+
+/* ── Layout ── */
 .content {
-  max-width: 480px;
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 48px 24px 40px;
+  padding: 48px 28px 40px;
   height: 100vh;
   overflow-y: auto;
+}
+
+/* ── Glass Card ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
 }
 
 /* ── Top bar ── */
@@ -48,53 +88,61 @@ body {
   justify-content: space-between;
   margin-bottom: 40px;
 }
-.topbar-left {}
 .greeting {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 2px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 .name {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
-  color: var(--text);
+  color: var(--text-primary);
   letter-spacing: -1px;
   line-height: 1;
 }
-.name span { color: var(--accent); }
+.name span {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .topbar-right {
   text-align: right;
   padding-top: 4px;
 }
-.weather-icon { font-size: 28px; line-height: 1; margin-bottom: 2px; }
-.weather-temp { font-size: 20px; font-weight: 700; color: var(--text); }
-.weather-loc { font-size: 11px; color: var(--muted); }
+.weather-icon { font-size: 30px; line-height: 1; margin-bottom: 4px; }
+.weather-temp {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.weather-loc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 /* ── Clock ── */
-.clock-section { margin-bottom: 40px; }
+.clock-section { margin-bottom: 36px; }
 .clock-main {
-  font-size: 80px;
+  font-size: 88px;
   font-weight: 200;
-  color: var(--text);
+  color: var(--text-primary);
   line-height: 1;
-  letter-spacing: -4px;
+  letter-spacing: -6px;
   font-variant-numeric: tabular-nums;
 }
 .clock-sec {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 200;
-  color: var(--muted);
+  color: var(--text-muted);
   vertical-align: super;
   letter-spacing: -1px;
-  margin-left: 2px;
+  margin-left: 4px;
 }
 .clock-date {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--muted);
+  font-size: 13px;
+  color: var(--text-muted);
   margin-top: 10px;
   letter-spacing: 0.5px;
 }
@@ -102,8 +150,8 @@ body {
 /* ── Divider ── */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border), transparent);
-  margin-bottom: 32px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  margin-bottom: 28px;
 }
 
 /* ── Info Row ── */
@@ -111,152 +159,151 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 .info-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  padding: 18px 20px;
   transition: all 0.25s ease;
 }
 .info-card:hover {
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.18);
   transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
 }
 .info-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
-.info-value { font-size: 14px; font-weight: 600; color: var(--text); }
-.info-icon { font-size: 18px; margin-bottom: 6px; }
+.info-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.info-icon { font-size: 20px; margin-bottom: 8px; }
 
 /* ── Quote ── */
 .quote-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  border-left: 2px solid;
+  border-image: linear-gradient(180deg, var(--accent-blue), var(--accent-pink)) 1;
 }
 .quote-text {
   font-size: 13px;
-  line-height: 1.7;
-  color: var(--text);
+  line-height: 1.75;
+  color: var(--text-primary);
   font-style: normal;
 }
-.quote-author {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 6px;
+.quote-author { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+/* ── Logs Link ── */
+.logs-card {
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  color: inherit;
 }
+.logs-card:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
+}
+.logs-title { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.logs-link { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.logs-arrow { font-size: 18px; color: var(--text-muted); }
 
 /* ── Memo ── */
 .memo-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  margin-bottom: 24px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
 }
 .memo-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
-.memo-input-row {
-  display: flex;
-  gap: 8px;
-}
+.memo-input-row { display: flex; gap: 8px; }
 .memo-input {
   flex: 1;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 9px 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 10px 14px;
   font-size: 12px;
   font-family: inherit;
-  color: var(--text);
+  color: var(--text-primary);
   outline: none;
   transition: border-color 0.2s;
 }
-.memo-input:focus { border-color: var(--accent); }
-.memo-input::placeholder { color: var(--muted); }
+.memo-input:focus { border-color: var(--accent-blue); }
+.memo-input::placeholder { color: var(--text-muted); }
 .memo-btn {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
   border: none;
   color: #fff;
   font-size: 12px;
-  padding: 9px 14px;
-  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: inherit;
 }
-.memo-btn:hover { background: #2563eb; transform: translateY(-1px); }
-.memo-list { margin-top: 10px; }
+.memo-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.memo-list { margin-top: 12px; }
 .memo-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   font-size: 12px;
-  color: var(--text);
+  color: var(--text-primary);
 }
 .memo-item:last-child { border-bottom: none; }
 .memo-check {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid rgba(255,255,255,0.3);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 10px;
   color: #fff;
   flex-shrink: 0;
   transition: all 0.2s;
 }
-.memo-check.done { background: var(--accent); border-color: var(--accent); }
+.memo-check.done {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+  border-color: transparent;
+}
 .memo-text { flex: 1; cursor: pointer; line-height: 1.5; }
-.memo-text.done { text-decoration: line-through; color: var(--muted); }
-.memo-empty { text-align: center; font-size: 11px; color: var(--muted); padding: 8px 0; }
+.memo-text.done { text-decoration: line-through; color: var(--text-muted); }
+.memo-empty { text-align: center; font-size: 11px; color: var(--text-muted); padding: 10px 0; }
 
-/* ── Particles ── */
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.particle {
-  position: absolute;
-  animation: floatUp linear infinite;
-  opacity: 0;
-  filter: drop-shadow(0 0 4px rgba(59,130,246,0.15));
-}
-@keyframes floatUp {
-  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-  10% { opacity: 0.6; }
-  90% { opacity: 0.4; }
-  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-}
+/* ── Scrollbar ── */
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
 </style>
 </head>
 <body>
 
+<div class="bg"></div>
 <div class="particles" id="particles"></div>
 
 <div class="content">
 
-  <!-- Top bar: greeting left, weather right -->
+  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="greeting" id="greeting">下午好</div>
@@ -281,12 +328,12 @@ body {
 
   <!-- Info row -->
   <div class="info-row">
-    <div class="info-card">
+    <div class="info-card glass">
       <div class="info-icon">📍</div>
       <div class="info-label">位置</div>
       <div class="info-value" id="ipInfo">--</div>
     </div>
-    <div class="info-card">
+    <div class="info-card glass">
       <div class="info-icon">🗓</div>
       <div class="info-label">日期</div>
       <div class="info-value" id="todayInfo">--</div>
@@ -294,21 +341,22 @@ body {
   </div>
 
   <!-- Quote -->
-  <div class="quote-card">
+  <div class="quote-card glass">
     <div class="quote-text" id="quote">"loading..."</div>
     <div class="quote-author" id="quoteAuthor"></div>
   </div>
 
   <!-- Logs link -->
-  <div class="memo-card">
-    <div class="memo-title">📊 每日日志</div>
-    <div style="padding: 4px 0 2px;">
-      <a href="logs.html" class="memo-btn" style="display:inline-block;text-decoration:none;color:#fff;background:var(--accent);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;">查看运行日志 →</a>
+  <a href="logs.html" class="logs-card glass">
+    <div>
+      <div class="logs-title">📊 每日日志</div>
+      <div class="logs-link">查看运行日志</div>
     </div>
-  </div>
+    <div class="logs-arrow">→</div>
+  </a>
 
   <!-- Memo -->
-  <div class="memo-card">
+  <div class="memo-card glass">
     <div class="memo-title">备忘</div>
     <div class="memo-list" id="memoList"></div>
     <div class="memo-input-row">
@@ -357,7 +405,7 @@ async function fetchIP() {
 }
 fetchIP();
 
-/* ── Weather (Jiangxi) ── */
+/* ── Weather ── */
 async function fetchWeather() {
   try {
     var r = await fetch('https://wttr.in/Jiangxi?format=%c+%t+%C&lang=zh');
@@ -386,21 +434,26 @@ document.getElementById('quote').textContent = '"' + qi[0] + '"';
 document.getElementById('quoteAuthor').textContent = '— ' + qi[1];
 
 /* ── Particles ── */
-var shapes = ['✨','🧊','💠','🔵','🌊','🪐'];
-for (var i = 0; i < 12; i++) {
+var colors = ['rgba(96,165,250,0.6)', 'rgba(244,114,182,0.6)', 'rgba(192,132,252,0.6)', 'rgba(255,255,255,0.4)'];
+for (var i = 0; i < 20; i++) {
   var p = document.createElement('div');
   p.className = 'particle';
-  p.textContent = shapes[Math.floor(Math.random() * shapes.length)];
-  p.style.left = Math.random() * 100 + '%';
-  p.style.fontSize = (12 + Math.random() * 12) + 'px';
-  p.style.animationDuration = (12 + Math.random() * 14) + 's';
-  p.style.animationDelay = Math.random() * 12 + 's';
+  var size = 4 + Math.random() * 10;
+  var color = colors[Math.floor(Math.random() * colors.length)];
+  p.style.cssText =
+    'width:' + size + 'px;' +
+    'height:' + size + 'px;' +
+    'background:' + color + ';' +
+    'left:' + (Math.random() * 100) + '%;' +
+    'animation-duration:' + (14 + Math.random() * 16) + 's;' +
+    'animation-delay:' + (Math.random() * 14) + 's;' +
+    'box-shadow:0 0 ' + (size * 2) + 'px ' + color;
   document.getElementById('particles').appendChild(p);
 }
 
 /* ── Memo ── */
 var memos = [];
-function loadMemos() { memos = JSON.parse(localStorage.getItem('dashMemos2') || '[]'); renderMemos(); }
+function loadMemos() { memos = JSON.parse(localStorage.getItem('dashMemos3') || '[]'); renderMemos(); }
 function renderMemos() {
   var list = document.getElementById('memoList');
   if (memos.length === 0) { list.innerHTML = '<div class="memo-empty">记录点什么吧~</div>'; return; }
@@ -416,10 +469,10 @@ function addMemo() {
   if (!text) return;
   memos.push({text: text, done: false});
   document.getElementById('memoInput').value = '';
-  localStorage.setItem('dashMemos2', JSON.stringify(memos));
+  localStorage.setItem('dashMemos3', JSON.stringify(memos));
   renderMemos();
 }
-function toggleMemo(i) { memos[i].done = !memos[i].done; localStorage.setItem('dashMemos2', JSON.stringify(memos)); renderMemos(); }
+function toggleMemo(i) { memos[i].done = !memos[i].done; localStorage.setItem('dashMemos3', JSON.stringify(memos)); renderMemos(); }
 loadMemos();
 </script>
 </body>
