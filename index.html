@@ -93,6 +93,144 @@ body {
   justify-content: space-between;
   margin-bottom: 40px;
 }
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── Capybara (CSS only) ── */
+.capybara {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  animation: capy-bounce 3s ease-in-out infinite;
+}
+@keyframes capy-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.capy-body {
+  width: 52px;
+  height: 44px;
+  background: #b5856a;
+  border-radius: 50% 50% 46% 46%;
+  position: absolute;
+  bottom: 0;
+  box-shadow: inset -6px -6px 12px rgba(0,0,0,0.12), inset 4px 4px 8px rgba(255,255,255,0.15);
+}
+.capy-ear {
+  width: 14px;
+  height: 14px;
+  background: #c4967a;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  box-shadow: inset -2px -2px 4px rgba(0,0,0,0.1);
+}
+.capy-ear.left { left: 4px; }
+.capy-ear.right { right: 4px; }
+.capy-ear::after {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 7px;
+  background: #e8c4b0;
+  border-radius: 50%;
+  margin: 3px;
+}
+.capy-face {
+  width: 40px;
+  height: 32px;
+  background: #c4967a;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 8px;
+  left: 6px;
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.08);
+}
+.capy-eye {
+  width: 9px;
+  height: 10px;
+  background: #2d1b0e;
+  border-radius: 50%;
+  position: absolute;
+  top: 8px;
+  animation: capy-blink 4s ease-in-out infinite;
+}
+.capy-eye.left { left: 8px; }
+.capy-eye.right { right: 8px; }
+.capy-eye::after {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+@keyframes capy-blink {
+  0%, 45%, 55%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.08); }
+}
+.capy-nose {
+  width: 14px;
+  height: 9px;
+  background: #8b6355;
+  border-radius: 50% 50% 45% 45%;
+  position: absolute;
+  bottom: 10px;
+  left: 13px;
+}
+.capy-blush {
+  width: 10px;
+  height: 6px;
+  background: rgba(244,114,182,0.4);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 6px;
+  filter: blur(1px);
+}
+.capy-blush.left { left: 1px; }
+.capy-blush.right { right: 1px; }
+.capy-bow {
+  width: 16px;
+  height: 10px;
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.capy-bow::before, .capy-bow::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-pink);
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  top: 0;
+}
+.capy-bow::before { left: 0; transform: rotate(-45deg); }
+.capy-bow::after { right: 0; transform: rotate(45deg) scaleX(-1); }
+.capy-bow-center {
+  width: 5px;
+  height: 5px;
+  background: #e890a8;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── Greeting + Name with entrance animation ── */
+.intro-wrap {
+  overflow: hidden;
+}
 .greeting {
   font-size: 11px;
   font-weight: 600;
@@ -100,6 +238,13 @@ body {
   letter-spacing: 3px;
   text-transform: uppercase;
   margin-bottom: 6px;
+  animation: greet-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: left center;
+}
+@keyframes greet-in {
+  0% { opacity: 0; transform: scale(1.8) translateY(-10px); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 .name {
   font-size: 34px;
@@ -107,6 +252,13 @@ body {
   color: var(--text-primary);
   letter-spacing: -1px;
   line-height: 1;
+  animation: name-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
+  transform-origin: left center;
+}
+@keyframes name-in {
+  0% { opacity: 0; transform: scale(2.2) translateY(8px); }
+  70% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 .name span {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
@@ -117,6 +269,11 @@ body {
 .topbar-right {
   text-align: right;
   padding-top: 4px;
+  animation: fade-slide-in 0.8s ease 0.3s both;
+}
+@keyframes fade-slide-in {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 .weather-icon { font-size: 30px; line-height: 1; margin-bottom: 4px; }
 .weather-temp {
@@ -128,7 +285,23 @@ body {
 .weather-loc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 /* ── Clock ── */
-.clock-section { margin-bottom: 36px; }
+.clock-section {
+  margin-bottom: 36px;
+  animation: fade-slide-in 0.8s ease 0.35s both;
+}
+.clock-main {
+  font-size: 88px;
+  font-weight: 200;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -6px;
+  font-variant-numeric: tabular-nums;
+  animation: clock-in 1s cubic-bezier(0.34,1.56,0.64,1) 0.45s both;
+}
+@keyframes clock-in {
+  0% { opacity: 0; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
 .clock-main {
   font-size: 88px;
   font-weight: 200;
@@ -144,12 +317,14 @@ body {
   vertical-align: super;
   letter-spacing: -1px;
   margin-left: 4px;
+  animation: clock-in 1s cubic-bezier(0.34,1.56,0.64,1) 0.45s both;
 }
 .clock-date {
   font-size: 13px;
   color: var(--text-muted);
   margin-top: 10px;
   letter-spacing: 0.5px;
+  animation: fade-slide-in 0.8s ease 0.52s both;
 }
 
 /* ── Divider ── */
@@ -157,6 +332,11 @@ body {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(139,92,246,0.15), transparent);
   margin-bottom: 28px;
+  animation: divider-in 0.8s ease 0.42s both;
+}
+@keyframes divider-in {
+  0% { opacity: 0; transform: scaleX(0); }
+  100% { opacity: 1; transform: scaleX(1); }
 }
 
 /* ── Info Row ── */
@@ -165,6 +345,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 20px;
+  animation: fade-slide-in 0.8s ease 0.55s both;
 }
 .info-card {
   padding: 18px 20px;
@@ -192,6 +373,7 @@ body {
   margin-bottom: 20px;
   border-left: 3px solid transparent;
   border-image: linear-gradient(180deg, var(--accent-blue), var(--accent-pink)) 1;
+  animation: fade-slide-in 0.8s ease 0.65s both;
 }
 .quote-text {
   font-size: 13px;
@@ -326,8 +508,25 @@ body {
   <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
-      <div class="greeting" id="greeting">下午好</div>
-      <div class="name">程乐<span>正</span></div>
+      <!-- Capybara -->
+      <div class="capybara">
+        <div class="capy-body">
+          <div class="capy-ear left"></div>
+          <div class="capy-ear right"></div>
+          <div class="capy-face">
+            <div class="capy-eye left"></div>
+            <div class="capy-eye right"></div>
+            <div class="capy-nose"></div>
+            <div class="capy-blush left"></div>
+            <div class="capy-blush right"></div>
+          </div>
+          <div class="capy-bow"><div class="capy-bow-center"></div></div>
+        </div>
+      </div>
+      <div class="intro-wrap">
+        <div class="greeting" id="greeting">下午好</div>
+        <div class="name">程乐<span>正</span></div>
+      </div>
     </div>
     <div class="topbar-right">
       <div class="weather-icon" id="weatherIcon">🌤️</div>
@@ -367,6 +566,7 @@ body {
   </div>
 
   <!-- Logs link -->
+  <div style="animation: fade-slide-in 0.8s ease 0.72s both;">
   <a href="logs.html" class="logs-card glass">
     <div>
       <div class="logs-title">📊 每日日志</div>
@@ -374,9 +574,10 @@ body {
     </div>
     <div class="logs-arrow">→</div>
   </a>
+  </div>
 
   <!-- Memo -->
-  <div class="memo-card glass">
+  <div class="memo-card glass" style="animation: fade-slide-in 0.8s ease 0.8s both;">
     <div class="memo-title">备忘</div>
     <div class="memo-list" id="memoList"></div>
     <div class="memo-input-row">
