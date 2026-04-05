@@ -99,132 +99,103 @@ body {
   gap: 16px;
 }
 
-/* ── Capybara (CSS only) ── */
+/* ── Capybara Lulu (CSS + image) ── */
 .capybara {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   animation: capy-bounce 3s ease-in-out infinite;
 }
 @keyframes capy-bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  50% { transform: translateY(-5px); }
 }
-.capy-body {
-  width: 52px;
-  height: 44px;
-  background: #b5856a;
-  border-radius: 50% 50% 46% 46%;
+.capy-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(139,92,246,0.2);
+}
+
+/* flower crown overlay */
+.capy-flower-crown {
   position: absolute;
-  bottom: 0;
-  box-shadow: inset -6px -6px 12px rgba(0,0,0,0.12), inset 4px 4px 8px rgba(255,255,255,0.15);
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
 }
-.capy-ear {
-  width: 14px;
+.flower {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+.flower::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.6);
+}
+.flower.blue { background: #93c5fd; }
+.flower.pink { background: #f9a8d4; }
+.flower.purple { background: #c4b5fd; }
+
+/* small bird beside capybara */
+.capy-bird {
+  position: absolute;
+  bottom: 2px;
+  right: -18px;
+  width: 18px;
   height: 14px;
-  background: #c4967a;
+  animation: bird-hop 2s ease-in-out infinite;
+}
+@keyframes bird-hop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(5deg); }
+}
+.bird-body {
+  width: 18px;
+  height: 14px;
+  background: #60a5fa;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+}
+.bird-beak {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #fb923c;
+  position: absolute;
+  left: -4px;
+  top: 4px;
+  transform: rotate(-20deg);
+}
+.bird-eye {
+  width: 4px;
+  height: 4px;
+  background: #1e1b4b;
   border-radius: 50%;
   position: absolute;
-  top: 0;
-  box-shadow: inset -2px -2px 4px rgba(0,0,0,0.1);
+  right: 3px;
+  top: 3px;
 }
-.capy-ear.left { left: 4px; }
-.capy-ear.right { right: 4px; }
-.capy-ear::after {
+.bird-eye::after {
   content: '';
   display: block;
-  width: 7px;
-  height: 7px;
-  background: #e8c4b0;
-  border-radius: 50%;
-  margin: 3px;
-}
-.capy-face {
-  width: 40px;
-  height: 32px;
-  background: #c4967a;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 8px;
-  left: 6px;
-  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.08);
-}
-.capy-eye {
-  width: 9px;
-  height: 10px;
-  background: #2d1b0e;
-  border-radius: 50%;
-  position: absolute;
-  top: 8px;
-  animation: capy-blink 4s ease-in-out infinite;
-}
-.capy-eye.left { left: 8px; }
-.capy-eye.right { right: 8px; }
-.capy-eye::after {
-  content: '';
-  display: block;
-  width: 3px;
-  height: 3px;
+  width: 1.5px;
+  height: 1.5px;
   background: #fff;
   border-radius: 50%;
   position: absolute;
-  top: 2px;
-  left: 2px;
-}
-@keyframes capy-blink {
-  0%, 45%, 55%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.08); }
-}
-.capy-nose {
-  width: 14px;
-  height: 9px;
-  background: #8b6355;
-  border-radius: 50% 50% 45% 45%;
-  position: absolute;
-  bottom: 10px;
-  left: 13px;
-}
-.capy-blush {
-  width: 10px;
-  height: 6px;
-  background: rgba(244,114,182,0.4);
-  border-radius: 50%;
-  position: absolute;
-  bottom: 6px;
-  filter: blur(1px);
-}
-.capy-blush.left { left: 1px; }
-.capy-blush.right { right: 1px; }
-.capy-bow {
-  width: 16px;
-  height: 10px;
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.capy-bow::before, .capy-bow::after {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 10px;
-  background: var(--accent-pink);
-  border-radius: 50% 50% 50% 0;
-  position: absolute;
-  top: 0;
-}
-.capy-bow::before { left: 0; transform: rotate(-45deg); }
-.capy-bow::after { right: 0; transform: rotate(45deg) scaleX(-1); }
-.capy-bow-center {
-  width: 5px;
-  height: 5px;
-  background: #e890a8;
-  border-radius: 50%;
-  position: absolute;
-  top: 3px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0.5px;
+  left: 0.5px;
 }
 
 /* ── Greeting + Name with entrance animation ── */
@@ -508,19 +479,20 @@ body {
   <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
-      <!-- Capybara -->
+      <!-- Capybara Lulu -->
       <div class="capybara">
-        <div class="capy-body">
-          <div class="capy-ear left"></div>
-          <div class="capy-ear right"></div>
-          <div class="capy-face">
-            <div class="capy-eye left"></div>
-            <div class="capy-eye right"></div>
-            <div class="capy-nose"></div>
-            <div class="capy-blush left"></div>
-            <div class="capy-blush right"></div>
+        <div class="capy-flower-crown">
+          <div class="flower blue"></div>
+          <div class="flower pink"></div>
+          <div class="flower purple"></div>
+          <div class="flower blue"></div>
+        </div>
+        <img class="capy-img" src="assets/lulu.jpg" alt="噜噜">
+        <div class="capy-bird">
+          <div class="bird-body">
+            <div class="bird-beak"></div>
+            <div class="bird-eye"></div>
           </div>
-          <div class="capy-bow"><div class="capy-bow-center"></div></div>
         </div>
       </div>
       <div class="intro-wrap">
