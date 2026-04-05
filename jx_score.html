@@ -7,12 +7,11 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--surface:#ffffff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#3b82f6;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);--radius:16px}
-body{font-family:'Outfit','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;user-select:none}
+:root{--bg:#f8fafc;--surface:#ffffff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#3b82f6;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--shadow:0 1px 3px rgba(0,0,0,.06);--radius:16px}
+body{font-family:'Outfit','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .content{max-width:960px;margin:0 auto;padding:40px 24px 80px}
 .header{display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:32px}
-.back-btn{font-size:12px;color:var(--accent);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px}
-.back-btn:hover{text-decoration:underline}
+.back-btn{font-size:12px;color:var(--accent);text-decoration:none;font-weight:600;margin-bottom:8px;display:inline-block}
 .page-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
 .page-title span{color:var(--accent)}
 .header-date{font-size:12px;color:var(--muted);text-align:right}
@@ -35,7 +34,6 @@ tr td:first-child{color:var(--muted);font-size:12px;width:130px}
 .tag-yellow{background:rgba(245,158,11,.1);color:#d97706}
 .tag-blue{background:rgba(59,130,246,.1);color:#3b82f6}
 .tag-red{background:rgba(239,68,68,.1);color:#dc2626}
-.tag-gray{background:#f1f5f9;color:#64748b}
 .status-green{color:#059669;font-weight:700}
 .status-yellow{color:#d97706;font-weight:700}
 .status-red{color:#dc2626;font-weight:700}
@@ -62,7 +60,7 @@ a:hover{text-decoration:underline}
 .step-text{font-size:13px;color:var(--text)}
 .score-bar{display:flex;align-items:center;gap:12px;margin:6px 0}
 .score-label{font-size:12px;color:var(--muted);width:120px;flex-shrink:0}
-.score-fill{height:8px;background:linear-gradient(90deg,#3b82f6,#10b981);border-radius:4px;flex-grow:1;max-width:300px}
+.score-fill{height:8px;border-radius:4px;flex-grow:1;max-width:300px}
 .score-value{font-size:13px;font-weight:700;min-width:60px;text-align:right}
 </style>
 </head>
@@ -75,16 +73,12 @@ a:hover{text-decoration:underline}
     </div>
     <div class="header-date" id="today"></div>
   </div>
-
-  <!-- Stats -->
   <div class="info-cards">
     <div class="info-card"><div class="info-num">2025</div><div class="info-label">考试年份</div></div>
     <div class="info-card"><div class="info-num">6月18日</div><div class="info-label">分数线公布</div></div>
     <div class="info-card"><div class="info-num">5月31日</div><div class="info-label">成绩可查</div></div>
     <div class="info-card"><div class="info-num">国贸</div><div class="info-label">国际经济与贸易</div></div>
   </div>
-
-  <!-- Source -->
   <div class="data-source">
     <div class="data-source-title">📂 数据来源</div>
     <p style="font-size:13px;color:#166534;line-height:1.8">
@@ -94,13 +88,7 @@ a:hover{text-decoration:underline}
       <strong>公布：</strong>2025年6月18日 &nbsp;|&nbsp; <strong>开放查询：</strong>2025年5月31日
     </p>
   </div>
-
-  <!-- Alert -->
-  <div class="alert">
-    ⚠️ <strong>说明：</strong>官方Excel附件需凭准考证号和身份证号登录方可下载。以下分数为官方公告信息+公开报道整理+历年规律估算的综合数据，供备考参考。完整精确分数请下载官方附件。
-  </div>
-
-  <!-- Known Scores -->
+  <div class="alert">⚠️ <strong>说明：</strong>官方Excel附件需凭准考证号和身份证号登录方可下载。以下分数为官方公告信息+公开报道整理+历年规律估算的综合数据，供备考参考。完整精确分数请下载官方附件。</div>
   <div class="highlight-box">
     <div class="highlight-title">📊 已公开的真实进面分数（省直考区）</div>
     <div class="highlight-grid">
@@ -109,83 +97,30 @@ a:hover{text-decoration:underline}
       <div><div class="highlight-num">128~138</div><div class="highlight-lbl">省直岗估算区间</div></div>
     </div>
   </div>
-
-  <!-- Score Range by Position -->
   <div class="card">
     <div class="card-title">📋 各职位类型预估进面分（估算区间 · 仅供参考）</div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr><th>职位类型</th><th>适用地区</th><th>预估进面分</th><th>竞争</th><th>说明</th></tr>
-        </thead>
+        <thead><tr><th>职位类型</th><th>地区</th><th>预估进面分</th><th>竞争</th><th>说明</th></tr></thead>
         <tbody>
-          <tr>
-            <td>省直经济管理岗</td><td>南昌（省直）</td>
-            <td><span class="status-red">130+</span></td>
-            <td><span class="tag tag-red">激烈</span></td>
-            <td>省直热门职位，通常130分以上方能进面</td>
-          </tr>
-          <tr>
-            <td>市级商务/经贸岗</td><td>各地级市</td>
-            <td><span class="status-yellow">120~135</span></td>
-            <td><span class="tag tag-yellow">中等</span></td>
-            <td>地市级经济类岗位，分数差异较大</td>
-          </tr>
-          <tr>
-            <td>县乡基层岗（国贸可报）</td><td>各县/区/乡</td>
-            <td><span class="status-green">110~125</span></td>
-            <td><span class="tag tag-green">较小</span></td>
-            <td>基层岗竞争较小，国贸应届生主要竞争区间</td>
-          </tr>
-          <tr>
-            <td>行政执法类（国贸方向）</td><td>各地</td>
-            <td><span class="status-yellow">115~130</span></td>
-            <td><span class="tag tag-yellow">中等</span></td>
-            <td>行政执法类含专业科目，分数分布广</td>
-          </tr>
-          <tr>
-            <td>三不限岗（无专业限制）</td><td>基层地区</td>
-            <td><span class="status-red">125+</span></td>
-            <td><span class="tag tag-red">激烈</span></td>
-            <td>三不限竞争最激烈，分数偏高</td>
-          </tr>
+          <tr><td>省直经济管理岗</td><td>南昌（省直）</td><td><span class="status-red">130+</span></td><td><span class="tag tag-red">激烈</span></td><td>省直热门职位，通常130分以上方能进面</td></tr>
+          <tr><td>市级商务/经贸岗</td><td>各地级市</td><td><span class="status-yellow">120~135</span></td><td><span class="tag tag-yellow">中等</span></td><td>地市级经济类岗位，分数差异较大</td></tr>
+          <tr><td>县乡基层岗（国贸可报）</td><td>各县/区/乡</td><td><span class="status-green">110~125</span></td><td><span class="tag tag-green">较小</span></td><td>基层岗竞争较小，国贸应届生主要竞争区间</td></tr>
+          <tr><td>行政执法类（国贸方向）</td><td>各地</td><td><span class="status-yellow">115~130</span></td><td><span class="tag tag-yellow">中等</span></td><td>行政执法类含专业科目，分数分布广</td></tr>
+          <tr><td>三不限岗（无专业限制）</td><td>基层地区</td><td><span class="status-red">125+</span></td><td><span class="tag tag-red">激烈</span></td><td>三不限竞争最激烈，分数偏高</td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
-  <!-- Score visualization -->
   <div class="card">
     <div class="card-title">📈 分数区间可视化</div>
-    <div class="score-bar">
-      <div class="score-label">县乡基层岗</div>
-      <div class="score-fill" style="width:55%"></div>
-      <div class="score-value" style="color:#059669">110~125</div>
-    </div>
-    <div class="score-bar">
-      <div class="score-label">行政执法类</div>
-      <div class="score-fill" style="width:70%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
-      <div class="score-value" style="color:#d97706">115~130</div>
-    </div>
-    <div class="score-bar">
-      <div class="score-label">市级商务岗</div>
-      <div class="score-fill" style="width:80%;background:linear-gradient(90deg,#f59e0b,#ef4444)"></div>
-      <div class="score-value" style="color:#d97706">120~135</div>
-    </div>
-    <div class="score-bar">
-      <div class="score-label">省直综合岗</div>
-      <div class="score-fill" style="width:95%;background:linear-gradient(90deg,#ef4444,#dc2626)"></div>
-      <div class="score-value" style="color:#dc2626">128~138</div>
-    </div>
-    <div class="score-bar">
-      <div class="score-label">省直热门岗</div>
-      <div class="score-fill" style="width:100%;background:#dc2626"></div>
-      <div class="score-value" style="color:#dc2626">135+</div>
-    </div>
+    <div class="score-bar"><div class="score-label">县乡基层岗</div><div class="score-fill" style="width:55%;background:linear-gradient(90deg,#10b981,#34d399)"></div><div class="score-value" style="color:#059669">110~125</div></div>
+    <div class="score-bar"><div class="score-label">行政执法类</div><div class="score-fill" style="width:70%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div><div class="score-value" style="color:#d97706">115~130</div></div>
+    <div class="score-bar"><div class="score-label">市级商务岗</div><div class="score-fill" style="width:80%;background:linear-gradient(90deg,#f59e0b,#ef4444)"></div><div class="score-value" style="color:#d97706">120~135</div></div>
+    <div class="score-bar"><div class="score-label">省直综合岗</div><div class="score-fill" style="width:95%;background:linear-gradient(90deg,#ef4444,#dc2626)"></div><div class="score-value" style="color:#dc2626">128~138</div></div>
+    <div class="score-bar"><div class="score-label">省直热门岗</div><div class="score-fill" style="width:100%;background:#dc2626"></div><div class="score-value" style="color:#dc2626">135+</div></div>
     <p class="note mt16">注：满分通常200分（行测100+申论100）。柱状图表示相对竞争激烈程度。</p>
   </div>
-
-  <!-- 国贸可报职位 -->
   <div class="card">
     <div class="card-title">🎯 国贸专业可报职位一览</div>
     <div class="table-wrap">
@@ -204,8 +139,6 @@ a:hover{text-decoration:underline}
     </div>
     <p class="note mt16"><strong>应届生优势：</strong>2025年江西省考中，应届毕业生可报考的国贸岗位较多，尤其是县乡基层职位。建议优先选择限制应届生的职位，竞争相对较小。</p>
   </div>
-
-  <!-- 查询方法 -->
   <div class="card">
     <div class="card-title">🔍 查询精确分数的方法</div>
     <div class="flex mt8">
@@ -224,39 +157,20 @@ a:hover{text-decoration:underline}
     </div>
     <p class="note mt16">📌 <strong>国贸专业对应专业目录：</strong>国贸（国际经济与贸易）在江西省考专业目录中通常归为「经济学类」或「工商管理类」，可同时搜索这两个类别的职位。</p>
   </div>
-
-  <!-- 备考目标 -->
   <div class="card">
     <div class="card-title">💡 备考目标建议（基于估算区间）</div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>备考目标</th><th>建议分数</th><th>行测目标</th><th>申论目标</th><th>备考重点</th></tr></thead>
         <tbody>
-          <tr>
-            <td><span class="tag tag-green">保底</span> 县乡基层</td>
-            <td><span class="status-green">115分以上</span></td>
-            <td>65+</td><td>50+</td>
-            <td>资料分析、言语理解正确率优先</td>
-          </tr>
-          <tr>
-            <td><span class="tag tag-yellow">稳妥</span> 市区职位</td>
-            <td><span class="status-yellow">125分以上</span></td>
-            <td>70+</td><td>55+</td>
-            <td>全面提升，正确率85%+</td>
-          </tr>
-          <tr>
-            <td><span class="tag tag-red">冲击</span> 省直热门</td>
-            <td><span class="status-red">135分以上</span></td>
-            <td>75+</td><td>60+</td>
-            <td>大量练习+错题复盘，冲刺拔高</td>
-          </tr>
+          <tr><td><span class="tag tag-green">保底</span> 县乡基层</td><td><span class="status-green">115分以上</span></td><td>65+</td><td>50+</td><td>资料分析、言语理解正确率优先</td></tr>
+          <tr><td><span class="tag tag-yellow">稳妥</span> 市区职位</td><td><span class="status-yellow">125分以上</span></td><td>70+</td><td>55+</td><td>全面提升，正确率85%+</td></tr>
+          <tr><td><span class="tag tag-red">冲击</span> 省直热门</td><td><span class="status-red">135分以上</span></td><td>75+</td><td>60+</td><td>大量练习+错题复盘，冲刺拔高</td></tr>
         </tbody>
       </table>
     </div>
     <p class="note mt16">📌 江西省考行测135题/120分钟，申论4题/150分钟。面试比例1:3，笔试成绩占综合成绩50%~60%。</p>
   </div>
-
-  <!-- Published Scores Table -->
   <div class="card">
     <div class="card-title">📰 已公开的部分职位真实分数（官方公告）</div>
     <div class="table-wrap">
@@ -272,7 +186,6 @@ a:hover{text-decoration:underline}
       </table>
     </div>
   </div>
-
   <div class="footer">
     数据来源：江西省人力资源和社会保障厅 · 江西省人事考试中心 · 官方公告及公开报道整理<br>
     本页面由 OpenClaw AI Agent 自动整理 · 最近更新：2026年4月5日
