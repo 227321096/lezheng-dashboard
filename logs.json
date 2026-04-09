@@ -1,1 +1,1 @@
-{"logs":[{"date":"2026-04-07","summary":"鍚姩鏃ワ紝鏃犺蹇嗘枃浠躲€傚仴搴锋鏌ワ細Gateway杩愯涓紝API姝ｅ父锛孲kills鍏ㄩ儴灏辩华銆?,"details":"鏃ュ織绯荤粺棣栨鍐欏叆锛宮emory涓嶅瓨鍦紝浠婃棩涓轰富浼氳瘽鏂板懆鏈熴€?}],"lastUpdated":"2026-04-07"}
+{"logs":[{"date":"2026-04-07","summary":"启动日，无记忆文件。健康检查：Gateway运行中，API正常，Skills全部就绪。","details":"日志系统首次写入，memory不存在，今日为主会话新周期。"},{"date":"2026-04-09","summary":"健康检查：启动正常，Gateway运行中，API就绪，无memory记录。","details":"今日memory/2026-04-09.md不存在，判定为无活动日。"}],"lastUpdated":"2026-04-09"}
