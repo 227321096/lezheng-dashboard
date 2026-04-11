@@ -386,10 +386,7 @@ window.addTodo = function() {
 document.getElementById('todoAdd').addEventListener('click', addTodo);
 renderTodos();
 
-// —— GitHub Gist Direct Sync ——
-var GIST_ID = '0e94dc8d34030821b67b5421d86b9537';
-var GH_TOKEN = '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';
-
+// —— Sync to GitHub via LAN webhook (fallback: localStorage) ——
 function setSyncStatus(msg, color) {
   var el = document.getElementById('syncStatus');
   if (!el) return;
@@ -397,57 +394,39 @@ function setSyncStatus(msg, color) {
   el.style.color = color || 'var(--text-secondary)';
 }
 
-function loadFromGist() {
-  fetch('https://api.github.com/gists/' + GIST_ID, {
-    headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(gist) {
-    try {
-      var data = JSON.parse(gist.files['dashboard-sync.json'].content);
-      if (data.todos && data.todos.length > 0) { saveTodos(data.todos); renderTodos(); }
-      if (data.theme === 'dark') applyTheme(true);
-      if (data.updated) setSyncStatus('已同步 ' + data.updated, 'var(--green)');
-    } catch(e) {}
-  })
-  .catch(function() {});
+function loadSyncData() {
+  // Try local webhook first
+  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '192.168.0.100', '127.0.0.1'];
+  var tried = 0;
+  function tryNext() {
+    if (tried >= ips.length) {
+      // Fallback: load from raw GitHub
+      fetch('https://raw.githubusercontent.com/227321096/lezheng-dashboard/main/dashboard-sync.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) { applySyncData(data); })
+        .catch(function() {});
+      return;
+    }
+    var ip = ips[tried++];
+    fetch('http://' + ip + ':5000/sync', { method: 'GET' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) { applySyncData(data); })
+      .catch(function() { tryNext(); });
+  }
+  tryNext();
 }
 
-function saveToGist(data, btn) {
+function applySyncData(data) {
+  if (!data || !data.updated) return;
+  if (data.todos && data.todos.length > 0) { saveTodos(data.todos); renderTodos(); }
+  if (data.theme === 'dark') applyTheme(true);
+  setSyncStatus('已同步 ' + data.updated.split(' ')[0], 'var(--green)');
+}
+
+window.syncToGit = function() {
+  var btn = document.getElementById('syncBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
   setSyncStatus('同步中…', 'var(--orange)');
-  var body = JSON.stringify({
-    description: 'lezheng dashboard sync',
-    public: false,
-    files: { 'dashboard-sync.json': { content: JSON.stringify(data, null, 2) } }
-  });
-  fetch('https://api.github.com/gists/' + GIST_ID, {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + GH_TOKEN,
-      'Content-Type': 'application/json',
-      'Accept': 'application/vnd.github.v3+json'
-    },
-    body: body
-  })
-  .then(function(r) {
-    if (r.ok || r.status === 200) {
-      setSyncStatus('已同步 ✓', 'var(--green)');
-      if (btn) btn.style.background = 'var(--green)';
-    } else {
-      setSyncStatus('同步失败(' + r.status + ')', 'var(--red)');
-    }
-  })
-  .catch(function() {
-    setSyncStatus('同步失败', 'var(--red)');
-  })
-  .finally(function() {
-    if (btn) { btn.disabled = false; btn.textContent = '↗'; }
-  });
-}
-
-window.syncToGit = function() {
-  var btn = document.getElementById('syncBtn');
-  if (btn) { btn.disabled = true; btn.textContent = '…'; }
   var now = new Date();
   var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   var payload = {
@@ -455,41 +434,34 @@ window.syncToGit = function() {
     theme: document.body.classList.contains('dark') ? 'dark' : 'light',
     updated: t
   };
-  saveToGist(payload, btn);
-};
 
-loadFromGist();
- })
-  .then(function(r) {
-    if (r.ok || r.status === 200) {
-      setSyncStatus('已同步 ✓', 'var(--green)');
-      if (btn) btn.style.background = 'var(--green)';
-    } else {
-      setSyncStatus('同步失败(' + r.status + ')', 'var(--red)');
+  // Try LAN IPs
+  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '192.168.0.100', '127.0.0.1'];
+  var tried = 0;
+  function tryNext() {
+    if (tried >= ips.length) {
+      setSyncStatus('同步失败（电脑未运行同步服务）', 'var(--red)');
+      if (btn) { btn.disabled = false; btn.textContent = '↗'; }
+      return;
     }
-  })
-  .catch(function() {
-    setSyncStatus('同步失败', 'var(--red)');
-  })
-  .finally(function() {
-    if (btn) { btn.disabled = false; btn.textContent = '↗'; }
-  });
-}
-
-window.syncToGit = function() {
-  var btn = document.getElementById('syncBtn');
-  if (btn) { btn.disabled = true; btn.textContent = '…'; }
-  var now = new Date();
-  var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  var payload = {
-    todos: getTodos(),
-    theme: document.body.classList.contains('dark') ? 'dark' : 'light',
-    updated: t
-  };
-  saveToGist(payload, btn);
+    var ip = ips[tried++];
+    fetch('http://' + ip + ':5000/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r) {
+      if (r.ok) {
+        setSyncStatus('已同步 ✓', 'var(--green)');
+        if (btn) { btn.style.background = 'var(--green)'; }
+      } else { tryNext(); }
+    }).catch(function() { tryNext(); });
+  }
+  tryNext();
+  if (btn) { setTimeout(function() { btn.disabled = false; btn.textContent = '↗'; }, 4000); }
 };
 
-loadFromGist();// Load Daily Tip
+loadSyncData();
+// Load Daily Tip
 fetch('daily-tip.json?t=' + Date.now())
   .then(function(r) { return r.json(); })
   .then(function(data) {
@@ -532,21 +504,6 @@ document.getElementById('themeToggle').addEventListener('click', function() {
 });
 </script>
 
-<!-- Chat Launcher -->
-<div class="chat-launcher" id="chatLauncher">
-  <a class="chat-btn" id="chatBtn" href="http://127.0.0.1:18789/?token=767b309e37354f0c0cde1a40861d6400fffc5d8553e1461a" aria-label="与乐正对话">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-  </a>
-</div>
-
-<script>
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW registration failed:', e); });
-}
-</script>
 
 </body>
 </html>
