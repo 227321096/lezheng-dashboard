@@ -386,10 +386,7 @@ window.addTodo = function() {
 document.getElementById('todoAdd').addEventListener('click', addTodo);
 renderTodos();
 
-// —— GitHub Gist Sync (token active) + LAN webhook fallback ——
-var GIST_ID = '0e94dc8d34030821b67b5421d86b9537';
-var GH_TOKEN = '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';
-
+// —— LAN Webhook Sync ——
 function setSyncStatus(msg, color) {
   var el = document.getElementById('syncStatus');
   if (!el) return;
@@ -398,29 +395,20 @@ function setSyncStatus(msg, color) {
 }
 
 function loadSyncData() {
-  // Load from Gist
+  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '127.0.0.1'];
   var tried = 0;
-  function tryGist() {
-    if (tried >= 2) {
-      loadFromGist();
+  function next() {
+    if (tried >= ips.length) {
+      setSyncStatus('未连接到同步服务', 'var(--text-secondary)');
       return;
     }
-    tried++;
-    var url = 'https://api.github.com/gists/' + GIST_ID + '?t=' + Date.now();
-    fetch(url, { headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github.v3+json' } })
+    var ip = ips[tried++];
+    fetch('http://' + ip + ':5000/sync')
       .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var f = data.files && data.files['dashboard-sync.json'];
-        if (f && f.content) {
-          try {
-            var d = JSON.parse(f.content);
-            applySyncData(d);
-          } catch(e) {}
-        }
-      })
-      .catch(function() { setTimeout(tryGist, 500); });
+      .then(function(data) { applySyncData(data); next = function() {}; })
+      .catch(function() { next(); });
   }
-  tryGist();
+  next();
 }
 
 function applySyncData(data) {
@@ -431,45 +419,6 @@ function applySyncData(data) {
   setSyncStatus('已同步 ' + d, 'var(--green)');
 }
 
-function saveToGist(payload, btn) {
-  var body = JSON.stringify({
-    description: 'lezheng dashboard sync',
-    public: false,
-    files: { 'dashboard-sync.json': { content: JSON.stringify(payload) } }
-  });
-  fetch('https://api.github.com/gists/' + GIST_ID, {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-    body: body
-  }).then(function(r) {
-    if (r.ok || r.status === 201) {
-      setSyncStatus('已同步 ✓', 'var(--green)');
-      if (btn) { btn.style.background = 'var(--green)'; }
-    } else { throw 1; }
-  }).catch(function() {
-    setSyncStatus('Gist失败，尝试本地…', 'var(--orange)');
-    syncViaLAN(payload, btn);
-  });
-}
-
-function syncViaLAN(payload, btn) {
-  var ips = ['172.16.103.14', '192.168.1.100', '127.0.0.1'];
-  var tried = 0;
-  function next() {
-    if (tried >= ips.length) {
-      setSyncStatus('同步失败', 'var(--red)');
-      if (btn) { btn.disabled = false; btn.textContent = '↗'; }
-      return;
-    }
-    var ip = ips[tried++];
-    fetch('http://' + ip + ':5000/sync', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-    }).then(function(r) { if (r.ok) { setSyncStatus('已同步 ✓', 'var(--green)'); if (btn) btn.style.background = 'var(--green)'; } else next(); })
-      .catch(function() { next(); });
-  }
-  next();
-}
-
 window.syncToGit = function() {
   var btn = document.getElementById('syncBtn');
   if (btn) { btn.disabled = true; btn.textContent = '…'; }
@@ -477,23 +426,29 @@ window.syncToGit = function() {
   var now = new Date();
   var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   var payload = { todos: getTodos(), theme: document.body.classList.contains('dark') ? 'dark' : 'light', updated: t };
-  saveToGist(payload, btn);
+  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '127.0.0.1'];
+  var tried = 0;
+  function next() {
+    if (tried >= ips.length) {
+      setSyncStatus('同步失败（电脑未运行）', 'var(--red)');
+      if (btn) { btn.disabled = false; btn.textContent = '↗'; }
+      return;
+    }
+    var ip = ips[tried++];
+    fetch('http://' + ip + ':5000/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r) {
+      if (r.ok) {
+        setSyncStatus('已同步 ✓', 'var(--green)');
+        if (btn) btn.style.background = 'var(--green)';
+      } else { next(); }
+    }).catch(function() { next(); });
+  }
+  next();
   if (btn) setTimeout(function() { btn.disabled = false; btn.textContent = '↗'; }, 5000);
 };
-
-function loadFromGist() {
-  fetch('https://api.github.com/gists/' + GIST_ID, { headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github.v3+json' } })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var f = data.files && data.files['dashboard-sync.json'];
-      if (f && f.content) {
-        try {
-          var d = JSON.parse(f.content);
-          applySyncData(d);
-        } catch(e) {}
-      }
-    }).catch(function() {});
-}
 
 loadSyncData();
 // Load Daily Tip

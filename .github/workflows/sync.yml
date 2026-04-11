@@ -1,27 +1,27 @@
 name: Dashboard Sync
 
 on:
+  repository_dispatch:
+    types: [dashboard-sync]
   workflow_dispatch:
-    inputs:
-      gist_content:
-        description: 'JSON content to write to Gist'
-        required: true
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - name: Update Gist
+        env:
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
         run: |
           curl -L -X PATCH \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+            -H "Authorization: Bearer $GIST_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "description": "lezheng dashboard sync",
               "public": false,
               "files": {
                 "dashboard-sync.json": {
-                  "content": ${{ github.event.inputs.gist_content }}
+                  "content": "${{ github.event.inputs.gist_content }}"
                 }
               }
             }' \
