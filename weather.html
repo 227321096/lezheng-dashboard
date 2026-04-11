@@ -104,7 +104,7 @@ body { background: var(--bg); }
 </div>
 
 <div class="hourly-section">
-  <div class="hourly-title">每小时预报 · 未来24小时</div>
+  <div class="hourly-title">每时天气 · 近4小时 + 未来24小时</div>
   <div class="hourly-scroll" id="hourlyList">
     <div class="loading">加载中…</div>
   </div>
@@ -143,24 +143,44 @@ function parseHourly(data) {
   var temps = data.hourly.temperature_2m;
   var hums = data.hourly.relative_humidity_2m;
   var winds = data.hourly.wind_speed_10m;
+
+  // Use API timezone (Asia/Shanghai) for consistent hour comparison
+  var tzOffset = 8; // GMT+8 for Shanghai
   var now = new Date();
-  var currentHour = now.getHours();
+  var nowTs = now.getTime();
+  var nowSH = new Date(now.getTime() + (8 - now.getTimezoneOffset()/60) * 3600000);
+  var currentSHHour = nowSH.getHours();
 
   var cards = [];
+  var started = false;
   for (var i = 0; i < times.length; i++) {
     var t = new Date(times[i]);
-    if (t < now) continue;
-    var h = t.getHours();
-    var label = (h === currentHour) ? '现在' : (h + '时');
+    // Include: from 4h ago to 24h ahead
+    var diff = t - nowTs;
+    if (diff < -4 * 3600000) continue; // skip >4h in the past
+    if (cards.length >= 28) break;      // max 28 cards
+
+    // Determine label
+    var shTime = new Date(t.getTime() + (8 - t.getTimezoneOffset()/60) * 3600000);
+    var shHour = shTime.getHours();
+    var label;
+    var isNow = false;
+    if (Math.abs(diff) < 3600000) {
+      label = '现在'; isNow = true;
+    } else if (diff < 0) {
+      label = '-' + Math.round(-diff / 3600000) + 'h';
+    } else {
+      label = shHour + '时';
+    }
+
     cards.push({
       label: label,
       icon: getWeatherIcon(codes[i]),
       temp: Math.round(temps[i]) + '°',
       hum: hums[i] + '%',
       wind: Math.round(winds[i]) + 'km/h',
-      isNow: h === currentHour
+      isNow: isNow
     });
-    if (cards.length >= 24) break;
   }
   return cards;
 }
@@ -203,7 +223,7 @@ function loadWeather(latitude, longitude, locationName) {
     + 'latitude=' + lat + '&longitude=' + lon
     + '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m'
     + '&hourly=weather_code,temperature_2m,relative_humidity_2m,wind_speed_10m'
-    + '&timezone=Asia/Shanghai&forecast_days=1')
+    + '&timezone=Asia/Shanghai&forecast_days=2')
   .then(function(r) { return r.json(); })
   .then(function(data) {
     renderCurrent(data, district);
