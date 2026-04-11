@@ -109,7 +109,11 @@ html { scroll-behavior: smooth; }
 <div class="todo-section">
   <div class="todo-header">
     <span class="todo-title">今日目标</span>
-    <button class="todo-add" id="todoAdd" aria-label="添加目标">+</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="sync-status" id="syncStatus" style="font-size:0.72rem;color:var(--text-secondary)"></span>
+      <button class="todo-add sync-btn" id="syncBtn" onclick="syncToGit()" title="同步到GitHub" style="background:var(--green);font-size:0.75rem;padding:0 10px;width:auto;height:26px;border-radius:13px">↗</button>
+      <button class="todo-add" id="todoAdd" aria-label="添加目标">+</button>
+    </div>
   </div>
   <div class="todo-list" id="todoList"></div>
 </div>
@@ -339,6 +343,52 @@ window.addTodo = function() {
 };
 document.getElementById('todoAdd').addEventListener('click', addTodo);
 renderTodos();
+
+// —— Sync to GitHub via LAN webhook ——
+function setSyncStatus(msg, color) {
+  var el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = color || 'var(--text-secondary)';
+}
+window.syncToGit = function() {
+  var btn = document.getElementById('syncBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  setSyncStatus('同步中…', 'var(--orange)');
+  var payload = {
+    todos: getTodos(),
+    theme: document.body.classList.contains('dark') ? 'dark' : 'light'
+  };
+  // Try common LAN IPs
+  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '192.168.0.100', '127.0.0.1'];
+  var tried = 0;
+  function tryNext() {
+    if (tried >= ips.length) {
+      setSyncStatus('同步失败（同局域网未找到服务端）', 'var(--red)');
+      if (btn) { btn.disabled = false; btn.textContent = '↗'; }
+      return;
+    }
+    var ip = ips[tried++];
+    fetch('http://' + ip + ':5000/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r) {
+      if (r.ok) {
+        setSyncStatus('已同步 ✓', 'var(--green)');
+        if (btn) { btn.disabled = false; btn.textContent = '↗'; btn.style.background = 'var(--green)'; }
+      } else { tryNext(); }
+    }).catch(function() { tryNext(); });
+  }
+  tryNext();
+};
+
+// Try to pull latest sync from GitHub on load
+fetch('dashboard-sync.json?t=' + Date.now())
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.updated) setSyncStatus('已同步 ' + data.updated, 'var(--green)');
+  }).catch(function() {});
 
 // —— Theme Toggle ——
 function applyTheme(dark) {
