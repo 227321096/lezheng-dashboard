@@ -203,5 +203,95 @@ if (navigator.geolocation) {
 }
 </script>
 
+<!-- Chat Launcher -->
+<div class="chat-launcher" id="chatLauncher">
+  <button class="chat-btn" id="chatBtn" aria-label="打开对话">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <span>与乐正对话</span>
+      <button class="chat-close" id="chatClose" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="chat-msg bot">说点什么吧，我可以帮你查天气、找数据、回答问题…</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" type="text" placeholder="问我想说什么…" autocomplete="off" />
+      <button class="chat-send" id="chatSend" aria-label="发送">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var launcher = document.getElementById('chatLauncher');
+  var chatBtn = document.getElementById('chatBtn');
+  var chatPanel = document.getElementById('chatPanel');
+  var chatClose = document.getElementById('chatClose');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+  var chatMsgs = document.getElementById('chatMsgs');
+  var panelOpen = false;
+
+  chatBtn.addEventListener('click', function() {
+    panelOpen = true;
+    chatPanel.style.display = 'flex';
+    launcher.classList.add('active');
+    chatInput.focus();
+  });
+
+  chatClose.addEventListener('click', function() {
+    panelOpen = false;
+    chatPanel.style.display = 'none';
+    launcher.classList.remove('active');
+  });
+
+  function appendMsg(text, who) {
+    var d = document.createElement('div');
+    d.className = 'chat-msg ' + who;
+    d.textContent = text;
+    chatMsgs.appendChild(d);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  }
+
+  function sendMsg() {
+    var text = chatInput.value.trim();
+    if (!text) return;
+    appendMsg(text, 'user');
+    chatInput.value = '';
+
+    // Send to OpenClaw gateway
+    fetch('http://127.0.0.1:18789/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      appendMsg(data.reply || data.message || '收到消息了', 'bot');
+    })
+    .catch(function() {
+      appendMsg('发送失败，请确保 OpenClaw 正在运行', 'bot');
+    });
+  }
+
+  chatSend.addEventListener('click', sendMsg);
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') sendMsg();
+  });
+})();
+</script>
+
 </body>
 </html>
