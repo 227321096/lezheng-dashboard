@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
@@ -42,6 +42,32 @@ html { scroll-behavior: smooth; }
 #clockTime { font-size: 4rem; font-weight: 700; color: var(--text); letter-spacing: -0.04em; line-height: 1; }
 #clockSec { font-size: 1.2rem; color: #86868b; font-weight: 400; }
 #clockDate { font-size: 0.85rem; color: #86868b; margin-top: 4px; }
+
+/* Today Tip Bar */
+.tip-bar {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 0 16px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.tip-bar .tip-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.tip-bar .tip-text { flex: 1; }
+.tip-bar .tip-category {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  margin-bottom: 6px;
+  color: #a0c4ff;
+}
+.tip-bar .tip-countdown { font-size: 0.75rem; color: #6c9bf2; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -149,7 +175,13 @@ html { scroll-behavior: smooth; }
     </div>
   </a>
 
-  <a href="positions.html" class="apple-card">
+  
+  <!-- Today Tip -->
+  <div class="tip-bar" id="tipBar">
+    <span class="tip-icon" id="tipIcon">&#x1f4a1;</span>
+    <span class="tip-text" id="tipText">加载中...</span>
+  </div>
+<a href="positions.html" class="apple-card">
     <div class="card-icon">📋</div>
     <div class="card-title">可报职位</div>
     <div class="card-desc">国考+省考筛选 · 1203个可报职位</div>
@@ -354,47 +386,128 @@ window.addTodo = function() {
 document.getElementById('todoAdd').addEventListener('click', addTodo);
 renderTodos();
 
-// —— Sync to GitHub via LAN webhook ——
+// —— GitHub Gist Direct Sync ——
+var GIST_ID = '0e94dc8d34030821b67b5421d86b9537';
+var GH_TOKEN = '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';
+
 function setSyncStatus(msg, color) {
   var el = document.getElementById('syncStatus');
   if (!el) return;
   el.textContent = msg;
   el.style.color = color || 'var(--text-secondary)';
 }
+
+function loadFromGist() {
+  fetch('https://api.github.com/gists/' + GIST_ID, {
+    headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(gist) {
+    try {
+      var data = JSON.parse(gist.files['dashboard-sync.json'].content);
+      if (data.todos && data.todos.length > 0) { saveTodos(data.todos); renderTodos(); }
+      if (data.theme === 'dark') applyTheme(true);
+      if (data.updated) setSyncStatus('已同步 ' + data.updated, 'var(--green)');
+    } catch(e) {}
+  })
+  .catch(function() {});
+}
+
+function saveToGist(data, btn) {
+  setSyncStatus('同步中…', 'var(--orange)');
+  var body = JSON.stringify({
+    description: 'lezheng dashboard sync',
+    public: false,
+    files: { 'dashboard-sync.json': { content: JSON.stringify(data, null, 2) } }
+  });
+  fetch('https://api.github.com/gists/' + GIST_ID, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + GH_TOKEN,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
+    },
+    body: body
+  })
+  .then(function(r) {
+    if (r.ok || r.status === 200) {
+      setSyncStatus('已同步 ✓', 'var(--green)');
+      if (btn) btn.style.background = 'var(--green)';
+    } else {
+      setSyncStatus('同步失败(' + r.status + ')', 'var(--red)');
+    }
+  })
+  .catch(function() {
+    setSyncStatus('同步失败', 'var(--red)');
+  })
+  .finally(function() {
+    if (btn) { btn.disabled = false; btn.textContent = '↗'; }
+  });
+}
+
 window.syncToGit = function() {
   var btn = document.getElementById('syncBtn');
   if (btn) { btn.disabled = true; btn.textContent = '…'; }
-  setSyncStatus('同步中…', 'var(--orange)');
+  var now = new Date();
+  var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   var payload = {
     todos: getTodos(),
-    theme: document.body.classList.contains('dark') ? 'dark' : 'light'
+    theme: document.body.classList.contains('dark') ? 'dark' : 'light',
+    updated: t
   };
-  // Try common LAN IPs
-  var ips = ['172.16.103.14', '192.168.1.100', '192.168.1.101', '192.168.0.100', '127.0.0.1'];
-  var tried = 0;
-  function tryNext() {
-    if (tried >= ips.length) {
-      setSyncStatus('同步失败（同局域网未找到服务端）', 'var(--red)');
-      if (btn) { btn.disabled = false; btn.textContent = '↗'; }
-      return;
-    }
-    var ip = ips[tried++];
-    fetch('http://' + ip + ':5000/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(function(r) {
-      if (r.ok) {
-        setSyncStatus('已同步 ✓', 'var(--green)');
-        if (btn) { btn.disabled = false; btn.textContent = '↗'; btn.style.background = 'var(--green)'; }
-      } else { tryNext(); }
-    }).catch(function() { tryNext(); });
-  }
-  tryNext();
+  saveToGist(payload, btn);
 };
 
-// Try to pull latest sync from GitHub on load
-fetch('dashboard-sync.json?t=' + Date.now())
+loadFromGist();
+ })
+  .then(function(r) {
+    if (r.ok || r.status === 200) {
+      setSyncStatus('已同步 ✓', 'var(--green)');
+      if (btn) btn.style.background = 'var(--green)';
+    } else {
+      setSyncStatus('同步失败(' + r.status + ')', 'var(--red)');
+    }
+  })
+  .catch(function() {
+    setSyncStatus('同步失败', 'var(--red)');
+  })
+  .finally(function() {
+    if (btn) { btn.disabled = false; btn.textContent = '↗'; }
+  });
+}
+
+window.syncToGit = function() {
+  var btn = document.getElementById('syncBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  var now = new Date();
+  var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  var payload = {
+    todos: getTodos(),
+    theme: document.body.classList.contains('dark') ? 'dark' : 'light',
+    updated: t
+  };
+  saveToGist(payload, btn);
+};
+
+loadFromGist();// Load Daily Tip
+fetch('daily-tip.json?t=' + Date.now())
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!data.tip) return;
+    var iconEl = document.getElementById('tipIcon');
+    var textEl = document.getElementById('tipText');
+    if (iconEl) iconEl.textContent = data.mood || '\uD83D\uDCA1';
+    if (textEl) {
+      var catHtml = '<div class="tip-category">' + (data.category||'') + '</div>';
+      var cdHtml = '';
+      if (data.countdown) {
+        cdHtml = '<div class="tip-countdown">距' + data.countdown.label + '还有 <strong>' + data.countdown.days + '</strong> 天（' + data.countdown.date + '）</div>';
+      }
+      textEl.innerHTML = catHtml + '<div>' + data.tip + '</div>' + cdHtml;
+    }
+  })
+  .catch(function() {});
+
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (data.updated) setSyncStatus('已同步 ' + data.updated, 'var(--green)');
