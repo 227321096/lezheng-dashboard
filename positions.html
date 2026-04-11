@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乐正 · 可报职位</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { padding: 20px; max-width: 900px; margin: 0 auto; }
+.filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.filter-bar select, .filter-bar button {
+  padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 0.9rem; cursor: pointer;
+}
+.filter-bar .tag {
+  padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary);
+}
+.filter-bar .tag.active { background: var(--green); color: #fff; border-color: var(--green); }
+.stat-bar { display: flex; gap: 16px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap; }
+.stat-bar span { color: var(--green); font-weight: 600; }
+.pos-card {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;
+  transition: box-shadow 0.2s;
+}
+.pos-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.pos-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 10px; }
+.pos-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+.pos-dept { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; }
+.pos-meta { display: flex; gap: 14px; font-size: 0.8rem; color: var(--text-secondary); flex-wrap: wrap; }
+.pos-meta .tag { padding: 2px 8px; border-radius: 4px; background: var(--bg-secondary); }
+.pos-meta .num { color: var(--orange); font-weight: 600; }
+.pos-meta .type-national { color: #3b82f6; }
+.pos-meta .type-provincial { color: #8b5cf6; }
+.pos-code { font-size: 0.75rem; color: var(--text-secondary); font-family: monospace; }
+.back-link { display: inline-block; margin-bottom: 16px; color: var(--link-color); text-decoration: none; font-size: 0.9rem; }
+.back-link:hover { text-decoration: underline; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<a href="index.html" class="back-link">← 返回仪表盘</a>
+<h2 style="margin: 0 0 4px">可报职位一览</h2>
+<p style="margin: 0 0 16px; color: var(--text-secondary); font-size: 0.85rem;">
+  国际经济与贸易 · 本科 · 群众 · 江西生源
+</p>
+
+<div class="filter-bar">
+  <select id="yearFilter">
+    <option value="all">全部年份</option>
+    <option value="2025">2025年</option>
+    <option value="2024">2024年</option>
+  </select>
+  <select id="typeFilter">
+    <option value="all">全部类型</option>
+    <option value="national">国考</option>
+    <option value="provincial">省考</option>
+  </select>
+  <select id="levelFilter">
+    <option value="all">全部层级</option>
+    <option value="县（区）级及以下">县区级及以下</option>
+    <option value="市（地）级">市级</option>
+    <option value="省（副省）级">省直</option>
+    <option value="中央">中央</option>
+  </select>
+  <button onclick="exportFiltered()">导出筛选结果</button>
+</div>
+
+<div class="stat-bar" id="statBar"></div>
+<div id="posList"></div>
+
+<script>
+var allData = [];
+var filtered = [];
+
+function tag(icon, label, cls) {
+  return '<span class="tag ' + (cls||'') + '">' + icon + ' ' + label + '</span>';
+}
+
+function render() {
+  var year = document.getElementById('yearFilter').value;
+  var type = document.getElementById('typeFilter').value;
+  var level = document.getElementById('levelFilter').value;
+  var kw = (document.getElementById('searchInput') || {value:''}).value.trim().toLowerCase();
+
+  filtered = allData.filter(function(d) {
+    if (year !== 'all' && String(d.year) !== year) return false;
+    if (type !== 'all' && d.type !== type) return false;
+    if (level !== 'all' && d.level !== level) return false;
+    if (kw && !d.dept.toLowerCase().includes(kw) && !d.pos.toLowerCase().includes(kw) && !d.major.toLowerCase().includes(kw)) return false;
+    return true;
+  });
+
+  renderStats();
+  renderList();
+}
+
+function renderStats() {
+  var byYear = {2024:0, 2025:0};
+  var byType = {national:0, provincial:0};
+  var totalNum = 0;
+  filtered.forEach(function(d) {
+    byYear[d.year] = (byYear[d.year]||0) + 1;
+    byType[d.type] = (byType[d.type]||0) + 1;
+    totalNum += (d.num||0);
+  });
+  document.getElementById('statBar').innerHTML =
+    '共 <span>' + filtered.length + '</span> 个职位，' +
+    '<span>' + Math.round(totalNum) + '</span> 个名额 &nbsp;|&nbsp;' +
+    '国考 <span>' + (byType.national||0) + '</span> &nbsp;|&nbsp;' +
+    '省考 <span>' + (byType.provincial||0) + '</span> &nbsp;|&nbsp;' +
+    '2025 <span>' + (byYear[2025]||0) + '</span> &nbsp;|&nbsp;' +
+    '2024 <span>' + (byYear[2024]||0) + '</span>';
+}
+
+function renderList() {
+  var el = document.getElementById('posList');
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty-state">没有找到符合条件的职位</div>';
+    return;
+  }
+  var html = '';
+  filtered.forEach(function(d) {
+    var t = d.type === 'national' ? '国考' : '省考';
+    var tCls = d.type === 'national' ? 'type-national' : 'type-provincial';
+    var levelLabel = d.level || '';
+    html += '<div class="pos-card">' +
+      '<div class="pos-header">' +
+        '<div class="pos-title">' + escHtml(d.pos || d.dept) + '</div>' +
+        '<div class="pos-code">' + escHtml(d.code||'') + '</div>' +
+      '</div>' +
+      '<div class="pos-dept">' + escHtml(d.dept||'') + '</div>' +
+      '<div class="pos-meta">' +
+        tag('<span class="' + tCls + '">●</span>', t) +
+        tag('', d.year + '年') +
+        (levelLabel ? tag('', levelLabel) : '') +
+        (d.num ? tag('', '招 ' + d.num + ' 人', 'num') : '') +
+        (d.edu ? tag('', d.edu) : '') +
+        (d.politics ? tag('', d.politics) : '') +
+        (d.work_loc ? tag('', d.work_loc) : '') +
+      '</div>' +
+    '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function exportFiltered() {
+  var txt = filtered.map(function(d) {
+    return [d.year+'年', d.type==='national'?'国考':'省考', d.dept, d.pos, d.code, d.num+'人', d.edu, d.politics, d.level, d.work_loc, d.major].join('\t');
+  }).join('\n');
+  var blob = new Blob(['\uFEFF'+'年份\t类型\t部门\t职位\t代码\t人数\t学历\t政治面貌\t层级\t工作地点\t专业要求\n'+txt], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = '可报职位_' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+}
+
+document.getElementById('yearFilter').addEventListener('change', render);
+document.getElementById('typeFilter').addEventListener('change', render);
+document.getElementById('levelFilter').addEventListener('change', render);
+
+fetch('exam_data.json?t=' + Date.now())
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    allData = data.positions || [];
+    document.title = '乐正 · 可报职位 (' + allData.length + ')';
+    render();
+  })
+  .catch(function(e) {
+    document.getElementById('posList').innerHTML = '<div class="empty-state">加载失败：' + e.message + '</div>';
+  });
+</script>
+</body>
+</html>

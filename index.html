@@ -102,7 +102,7 @@ html { scroll-behavior: smooth; }
     <span class="cd-num" id="cdSecs">--</span>
     <span class="cd-label">秒</span>
   </div>
-  <span class="cd-target">2026国考倒计时</span>
+  <span class="cd-target">2027国考倒计时</span>
 </div>
 
 <!-- Todo -->
@@ -146,6 +146,16 @@ html { scroll-behavior: smooth; }
     <div class="card-desc">实时学习进度与每日待复习单词</div>
     <div class="card-tags">
       <span class="apple-tag tag-green">学习中</span>
+    </div>
+  </a>
+
+  <a href="positions.html" class="apple-card">
+    <div class="card-icon">📋</div>
+    <div class="card-title">可报职位</div>
+    <div class="card-desc">国考+省考筛选 · 1203个可报职位</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-blue">国考 219</span>
+      <span class="apple-tag tag-purple">省考 984</span>
     </div>
   </a>
 
@@ -264,8 +274,8 @@ if (navigator.geolocation) {
 
 <!-- Countdown + Todo + Theme JS -->
 <script>
-// —— Countdown (2026 国考：11月27日) ——
-var EXAM_DATE = new Date('2026-11-27T08:30:00+08:00');
+// —— Countdown (2027 国考：11月29日) ——
+var EXAM_DATE = new Date('2026-11-29T08:30:00+08:00');
 function updateCountdown() {
   var now = new Date();
   var diff = EXAM_DATE - now;
