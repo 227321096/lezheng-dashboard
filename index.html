@@ -52,6 +52,11 @@ html { scroll-behavior: smooth; }
   <h1>你好，乐正</h1>
   <p>这里是属于你的个人数据中枢，所有生成的内容都在这里。</p>
   <div class="profile-bar"></div>
+  <div class="weather-widget" id="weatherWidget">
+    <span class="weather-icon" id="wIcon">--</span>
+    <span class="weather-temp" id="wTemp">--</span>
+    <span class="weather-detail" id="wDetail">--</span>
+  </div>
 </div>
 
 <!-- Clock -->
@@ -113,6 +118,20 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
+
+// Weather widget — reads from local weather.json
+fetch('weather.json')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('wIcon').textContent = data.weather;
+    document.getElementById('wTemp').textContent = data.temp;
+    document.getElementById('wDetail').textContent = data.humidity + ' ' + data.wind;
+  })
+  .catch(() => {
+    document.getElementById('wIcon').textContent = '🌤';
+    document.getElementById('wTemp').textContent = '--';
+    document.getElementById('wDetail').textContent = '天气加载失败';
+  });
 </script>
 
 </body>

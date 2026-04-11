@@ -78,6 +78,24 @@ body {
   margin: 0 auto;
 }
 
+/* Weather Widget */
+.weather-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+}
+.weather-icon { font-size: 1.1rem; }
+.weather-temp { font-weight: 600; color: var(--text); }
+.weather-detail { font-size: 0.85rem; }
+
 /* Apple Grid */
 .apple-grid {
   display: grid;
