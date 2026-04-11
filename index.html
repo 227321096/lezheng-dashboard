@@ -3,687 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard · 乐正</title>
+<title>乐正 · Dashboard</title>
+<link rel="stylesheet" href="style.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+/* Dashboard-specific overrides */
+html { scroll-behavior: smooth; }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+.hero-sub { font-size: 1rem; color: #86868b; margin-top: 8px; }
 
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-shadow: 0 8px 32px rgba(139, 92, 246, 0.08);
-  --glass-shadow-hover: 0 16px 48px rgba(139, 92, 246, 0.15);
-  --accent-blue: #60a5fa;
-  --accent-pink: #f472b6;
-  --accent-purple: #c084fc;
-  --text-primary: #1e1b4b;
-  --text-muted: rgba(30, 27, 75, 0.5);
-  --bg-gradient-1: rgba(147, 197, 253, 0.5);
-  --bg-gradient-2: rgba(252, 165, 165, 0.35);
-  --bg-gradient-3: rgba(192, 132, 252, 0.25);
-}
-
-body {
-  font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
-  min-height: 100vh;
-  overflow: hidden;
-  user-select: none;
-}
-
-/* ── Background ── */
-.bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 90% 70% at 10% 5%, rgba(147, 197, 253, 0.7) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 60% at 90% 95%, rgba(252, 165, 165, 0.5) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 50% at 85% 15%, rgba(192, 132, 252, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 60% at 15% 85%, rgba(244, 114, 182, 0.25) 0%, transparent 50%),
-    linear-gradient(160deg, #f0f4ff 0%, #fdf2f8 40%, #faf5ff 70%, #fff 100%);
-}
-
-/* ── Particles ── */
-.particles {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  animation: float linear infinite;
-  opacity: 0;
-}
-@keyframes float {
-  0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.4; }
-  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-}
-
-/* ── Layout ── */
-.content {
-  position: relative;
-  z-index: 2;
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 48px 28px 40px;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-/* ── Glass Card ── */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  box-shadow: var(--glass-shadow);
-}
-
-/* ── Top bar ── */
-.topbar {
+/* Profile bar */
+.profile-bar {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 40px;
-}
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* ── Capybara Lulu (CSS-drawn, no image needed) ── */
-.capybara {
-  position: relative;
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  animation: capy-bounce 3s ease-in-out infinite;
-}
-@keyframes capy-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-/* body - cream colored oval */
-.capy-body {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 42px;
-  background: radial-gradient(ellipse at 40% 35%, #f5e6d3 0%, #e8d5c0 40%, #dcc8a8 100%);
-  border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%;
-  box-shadow: inset -4px -4px 10px rgba(160,120,80,0.15), inset 3px 3px 8px rgba(255,255,255,0.5);
-}
-
-/* ears */
-.capy-ear {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  background: radial-gradient(circle at 40% 40%, #f0e0cc, #dcc8a8);
-  border-radius: 50%;
-  top: 4px;
-  box-shadow: inset -2px -2px 4px rgba(160,120,80,0.15);
-}
-.capy-ear.left { left: 5px; }
-.capy-ear.right { right: 5px; }
-
-/* face */
-.capy-face {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 38px;
-  height: 30px;
-  background: radial-gradient(ellipse at 40% 35%, #f8eedf, #e8d5c0);
-  border-radius: 50%;
-  box-shadow: inset -3px -3px 8px rgba(160,120,80,0.08);
-}
-
-/* eyes - big sparkly capybara eyes */
-.capy-eye {
-  position: absolute;
-  width: 11px;
-  height: 13px;
-  background: radial-gradient(circle at 35% 30%, #3d2817 0%, #1a0e08 60%);
-  border-radius: 50%;
-  top: 6px;
-  animation: capy-blink 4s ease-in-out infinite;
-  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
-}
-.capy-eye.left { left: 5px; }
-.capy-eye.right { right: 5px; }
-.capy-eye::before {
-  content: '';
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: #fff;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-}
-.capy-eye::after {
-  content: '';
-  position: absolute;
-  width: 2.5px;
-  height: 2.5px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  top: 3px;
-  left: 6px;
-}
-@keyframes capy-blink {
-  0%, 46%, 54%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.08); }
-}
-
-/* nose */
-.capy-nose {
-  position: absolute;
-  width: 15px;
-  height: 10px;
-  background: radial-gradient(ellipse at 40% 40%, #c4956a, #a07850);
-  border-radius: 50% 50% 45% 45%;
-  bottom: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* blush marks */
-.capy-blush {
-  position: absolute;
-  width: 10px;
-  height: 6px;
-  background: rgba(250, 160, 175, 0.5);
-  border-radius: 50%;
-  filter: blur(1.5px);
-  bottom: 5px;
-}
-.capy-blush.left { left: 1px; }
-.capy-blush.right { right: 1px; }
-
-/* flower crown */
-.capy-flower-crown {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1px;
-  align-items: flex-end;
-}
-.flower {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  position: relative;
-}
-.flower::after {
-  content: '';
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: #fffde0;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.flower.blue { background: #93c5fd; }
-.flower.sky { background: #7dd3fc; }
-.flower.pink { background: #f9a8d4; }
-.flower.purple { background: #c4b5fd; }
-
-/* small bird companion */
-.capy-bird {
-  position: absolute;
-  bottom: 1px;
-  right: -16px;
-  width: 16px;
-  height: 12px;
-  animation: bird-hop 2.5s ease-in-out infinite;
-}
-@keyframes bird-hop {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-3px) rotate(4deg); }
-}
-.bird-body {
-  width: 16px;
-  height: 12px;
-  background: radial-gradient(ellipse at 40% 40%, #93c5fd, #60a5fa);
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  position: relative;
-}
-.bird-beak {
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid #fb923c;
-  position: absolute;
-  left: -3px;
-  top: 3px;
-  transform: rotate(-15deg);
-}
-.bird-eye {
-  width: 3px;
-  height: 3px;
-  background: #1e1b4b;
-  border-radius: 50%;
-  position: absolute;
-  right: 2px;
-  top: 3px;
-}
-.bird-eye::after {
-  content: '';
-  display: block;
-  width: 1.5px;
-  height: 1.5px;
-  background: #fff;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* ── Greeting + Name with entrance animation ── */
-.intro-wrap {
-  overflow: hidden;
-}
-.greeting {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent-pink);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  animation: greet-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  transform-origin: left center;
-}
-@keyframes greet-in {
-  0% { opacity: 0; transform: scale(1.8) translateY(-10px); }
-  60% { opacity: 1; }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-.name {
-  font-size: 34px;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -1px;
-  line-height: 1;
-  animation: name-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
-  transform-origin: left center;
-}
-@keyframes name-in {
-  0% { opacity: 0; transform: scale(2.2) translateY(8px); }
-  70% { opacity: 1; }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-.name span {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.topbar-right {
-  text-align: right;
-  padding-top: 4px;
-  animation: fade-slide-in 0.8s ease 0.3s both;
-}
-@keyframes fade-slide-in {
-  0% { opacity: 0; transform: translateY(-8px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.weather-icon { font-size: 30px; line-height: 1; margin-bottom: 4px; }
-.weather-temp {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
-}
-.weather-loc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-/* ── Clock ── */
-.clock-section {
-  margin-bottom: 36px;
-  animation: fade-slide-in 0.8s ease 0.35s both;
-}
-.clock-main {
-  font-size: 88px;
-  font-weight: 200;
-  color: var(--text-primary);
-  line-height: 1;
-  letter-spacing: -6px;
-  font-variant-numeric: tabular-nums;
-  animation: clock-in 1s cubic-bezier(0.34,1.56,0.64,1) 0.45s both;
-}
-@keyframes clock-in {
-  0% { opacity: 0; transform: scale(1.3); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.clock-main {
-  font-size: 88px;
-  font-weight: 200;
-  color: var(--text-primary);
-  line-height: 1;
-  letter-spacing: -6px;
-  font-variant-numeric: tabular-nums;
-}
-.clock-sec {
-  font-size: 32px;
-  font-weight: 200;
-  color: var(--text-muted);
-  vertical-align: super;
-  letter-spacing: -1px;
-  margin-left: 4px;
-  animation: clock-in 1s cubic-bezier(0.34,1.56,0.64,1) 0.45s both;
-}
-.clock-date {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 10px;
-  letter-spacing: 0.5px;
-  animation: fade-slide-in 0.8s ease 0.52s both;
-}
-
-/* ── Divider ── */
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.15), transparent);
-  margin-bottom: 28px;
-  animation: divider-in 0.8s ease 0.42s both;
-}
-@keyframes divider-in {
-  0% { opacity: 0; transform: scaleX(0); }
-  100% { opacity: 1; transform: scaleX(1); }
-}
-
-/* ── Info Row ── */
-.info-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-  animation: fade-slide-in 0.8s ease 0.55s both;
-}
-.info-card {
-  padding: 18px 20px;
-  transition: all 0.25s ease;
-}
-.info-card:hover {
-  background: rgba(255, 255, 255, 0.75);
-  box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-2px);
-}
-.info-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.info-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-.info-icon { font-size: 20px; margin-bottom: 8px; }
-
-/* ── Quote ── */
-.quote-card {
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(180deg, var(--accent-blue), var(--accent-pink)) 1;
-  animation: fade-slide-in 0.8s ease 0.65s both;
-}
-.quote-text {
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--text-primary);
-  font-style: normal;
-}
-.quote-author { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
-
-/* ── Logs Link ── */
-.logs-card {
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-decoration: none;
-  color: inherit;
-}
-.logs-card:hover {
-  background: rgba(255, 255, 255, 0.75);
-  box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-2px);
-}
-.logs-title {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.logs-link { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-.logs-arrow { font-size: 18px; color: var(--accent-blue); }
-
-/* ── Memo ── */
-.memo-card {
-  padding: 20px 22px;
-  margin-bottom: 20px;
-}
-.memo-title {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.memo-input-row { display: flex; gap: 8px; }
-.memo-input {
-  flex: 1;
-  background: rgba(255,255,255,0.6);
-  border: 1.5px solid rgba(139,92,246,0.15);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 12px;
-  font-family: inherit;
-  color: var(--text-primary);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.memo-input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
-}
-.memo-input::placeholder { color: var(--text-muted); }
-.memo-btn {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-  border: none;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 10px 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-.memo-btn:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(96,165,250,0.35);
-}
-.memo-list { margin-top: 12px; }
-.memo-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(139,92,246,0.08);
-  font-size: 12px;
-  color: var(--text-primary);
-}
-.memo-item:last-child { border-bottom: none; }
-.memo-check {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(139,92,246,0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: 10px;
-  color: #fff;
-  flex-shrink: 0;
-  transition: all 0.2s;
+  margin-top: 24px;
 }
-.memo-check.done {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-  border-color: transparent;
+.profile-chip {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  color: #86868b;
 }
-.memo-text { flex: 1; cursor: pointer; line-height: 1.5; }
-.memo-text.done { text-decoration: line-through; color: var(--text-muted); }
-.memo-empty { text-align: center; font-size: 11px; color: var(--text-muted); padding: 10px 0; }
+.profile-chip span { color: #0071e3; font-weight: 600; }
 
-/* ── Scrollbar ── */
-.content::-webkit-scrollbar { width: 4px; }
-.content::-webkit-scrollbar-track { background: transparent; }
-.content::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.2); border-radius: 2px; }
+/* Clock widget */
+.clock-wrap { text-align: center; padding: 48px 20px 20px; }
+#clockTime { font-size: 4rem; font-weight: 700; color: var(--text); letter-spacing: -0.04em; line-height: 1; }
+#clockSec { font-size: 1.2rem; color: #86868b; font-weight: 400; }
+#clockDate { font-size: 0.85rem; color: #86868b; margin-top: 4px; }
 </style>
 </head>
 <body>
 
-<div class="bg"></div>
-<div class="particles" id="particles"></div>
+<!-- Nav -->
+<nav class="apple-nav">
+  <a href="index.html" class="active">首页</a>
+  <a href="data.html">公考板块</a>
+  <a href="dreams.html">梦境</a>
+  <div class="spacer"></div>
+  <span class="nav-title">乐正 · Dashboard</span>
+</nav>
 
-<div class="content">
-
-  <!-- Top bar -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <!-- Capybara Lulu -->
-      <div class="capybara">
-        <div class="capy-flower-crown">
-          <div class="flower blue"></div>
-          <div class="flower sky"></div>
-          <div class="flower pink"></div>
-          <div class="flower purple"></div>
-          <div class="flower sky"></div>
-        </div>
-        <div class="capy-ear left"></div>
-        <div class="capy-ear right"></div>
-        <div class="capy-body">
-          <div class="capy-face">
-            <div class="capy-eye left"></div>
-            <div class="capy-eye right"></div>
-            <div class="capy-nose"></div>
-            <div class="capy-blush left"></div>
-            <div class="capy-blush right"></div>
-          </div>
-        </div>
-        <div class="capy-bird">
-          <div class="bird-body">
-            <div class="bird-beak"></div>
-            <div class="bird-eye"></div>
-          </div>
-        </div>
-      </div>
-      <div class="intro-wrap">
-        <div class="greeting" id="greeting">下午好</div>
-        <div class="name">程乐<span>正</span></div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <div class="weather-icon" id="weatherIcon">🌤️</div>
-      <div class="weather-temp" id="weatherTemp">--°</div>
-      <div class="weather-loc" id="weatherLoc">江西</div>
-    </div>
+<!-- Hero -->
+<div class="apple-hero">
+  <h1>你好，乐正</h1>
+  <p>这里是属于你的个人数据中枢，所有生成的内容都在这里。</p>
+  <div class="profile-bar">
+    <div class="profile-chip">专业：<span>国际经济与贸易</span></div>
+    <div class="profile-chip">目标：<span>2026国考/省考</span></div>
+    <div class="profile-chip">户籍：<span>江西上饶</span></div>
   </div>
+</div>
 
-  <!-- Clock -->
-  <div class="clock-section">
-    <div class="clock-main">
-      <span id="clockTime">--:--</span><span class="clock-sec" id="clockSec">--</span>
+<!-- Clock -->
+<div class="clock-wrap">
+  <div id="clockTime">--:--</div>
+  <div id="clockSec">--</div>
+  <div id="clockDate"></div>
+</div>
+
+<!-- Grid -->
+<div class="apple-grid">
+
+  <a href="data.html" class="apple-card">
+    <div class="card-icon">📋</div>
+    <div class="card-title">公考板块</div>
+    <div class="card-desc">国考 · 省考岗位数据汇总，持续更新</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-blue">国考</span>
+      <span class="apple-tag tag-green">省考</span>
     </div>
-    <div class="clock-date" id="clockDate">----年--月--日 星期--</div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Info row -->
-  <div class="info-row">
-    <div class="info-card glass">
-      <div class="info-icon">📍</div>
-      <div class="info-label">位置</div>
-      <div class="info-value" id="ipInfo">--</div>
-    </div>
-    <div class="info-card glass">
-      <div class="info-icon">🗓</div>
-      <div class="info-label">日期</div>
-      <div class="info-value" id="todayInfo">--</div>
-    </div>
-  </div>
-
-  <!-- Quote -->
-  <div class="quote-card glass">
-    <div class="quote-text" id="quote">"loading..."</div>
-    <div class="quote-author" id="quoteAuthor"></div>
-  </div>
-
-  <!-- OpenClaw 梦境 -->
-  <div style="animation: fade-slide-in 0.8s ease 0.72s both;">
-  <a href="dreams.html" class="logs-card glass">
-    <div>
-      <div class="logs-title">🌙 OpenClaw梦境</div>
-      <div class="logs-link">记录与思考</div>
-    </div>
-    <div class="logs-arrow">→</div>
   </a>
-  </div>
 
-  <!-- 2026国考岗位 -->
-  <div style="animation: fade-slide-in 0.8s ease 0.76s both;">
-  <a href="data.html" class="logs-card glass">
-    <div>
-      <div class="logs-title">📋 公考板块</div>
-      <div class="logs-link">国考 · 省考岗位数据汇总</div>
+  <a href="dreams.html" class="apple-card">
+    <div class="card-icon">🌙</div>
+    <div class="card-title">OpenClaw 梦境</div>
+    <div class="card-desc">记录每一次重要判断时的思考与反思</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-purple">实时记录</span>
     </div>
-    <div class="logs-arrow">→</div>
   </a>
-  </div>
 
-  <!-- Memo -->
-    <div class="memo-title">备忘</div>
-    <div class="memo-list" id="memoList"></div>
-    <div class="memo-input-row">
-      <input class="memo-input" id="memoInput" placeholder="写点什么..." onkeydown="if(event.key==='Enter')addMemo()">
-      <button class="memo-btn" onclick="addMemo()">添加</button>
+  <a href="logs.html" class="apple-card">
+    <div class="card-icon">📊</div>
+    <div class="card-title">运行日志</div>
+    <div class="card-desc">OpenClaw 日常运行记录</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-orange">日志</span>
     </div>
-  </div>
+  </a>
 
 </div>
 
+<!-- Footer -->
+<div class="apple-footer">
+  OpenClaw · 个人 Dashboard · 由 AI 驱动
+</div>
+
 <script>
-/* ── Clock ── */
 function updateClock() {
   var now = new Date();
   var h = String(now.getHours()).padStart(2,'0');
@@ -697,103 +117,7 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
-
-/* ── Greeting ── */
-function updateGreeting() {
-  var h = new Date().getHours();
-  var t = h < 6 ? '凌晨好' : h < 9 ? '早上好' : h < 12 ? '上午好' : h < 14 ? '中午好' : h < 18 ? '下午好' : h < 22 ? '晚上好' : '夜深了';
-  document.getElementById('greeting').textContent = t;
-}
-updateGreeting();
-
-/* ── IP Location ── */
-async function fetchIP() {
-  try {
-    var r = await fetch('https://ipinfo.io/json');
-    var d = await r.json();
-    document.getElementById('ipInfo').textContent = d.city ? (d.city + ', ' + d.country) : d.ip;
-    document.getElementById('todayInfo').textContent = new Date().toLocaleDateString('zh-CN', {month:'2-digit',day:'2-digit'});
-  } catch(e) {
-    document.getElementById('ipInfo').textContent = '无法获取';
-    document.getElementById('todayInfo').textContent = new Date().toLocaleDateString('zh-CN', {month:'2-digit',day:'2-digit'});
-  }
-}
-fetchIP();
-
-/* ── Weather ── */
-async function fetchWeather() {
-  try {
-    var r = await fetch('https://wttr.in/Jiangxi?format=%c+%t+%C&lang=zh');
-    var t = await r.text();
-    var parts = t.trim().split(/\s+/);
-    document.getElementById('weatherIcon').textContent = parts[0] || '☀️';
-    document.getElementById('weatherTemp').textContent = (parts[1] || '+26').replace('C','') + '°';
-    document.getElementById('weatherLoc').textContent = parts[2] || '江西';
-  } catch(e) {
-    document.getElementById('weatherTemp').textContent = '+26°';
-  }
-}
-fetchWeather();
-
-/* ── Quote ── */
-var quotes = [
-  ['代码是写给人读的，顺便让机器运行。', 'Donald Knuth'],
-  ['大道至简，复杂的系统往往来自简单的想法的堆积。', 'Richard Feynman'],
-  ['行动胜于分析。', 'Jeff Bezos'],
-  ['最好的代码就是没有代码。', 'Jeff Atwood'],
-  ['简单是终极的复杂。', 'Leonardo da Vinci'],
-  ['保持简单，让复杂性自然产生。', 'John Maeda'],
-];
-var qi = quotes[Math.floor(Math.random() * quotes.length)];
-document.getElementById('quote').textContent = '"' + qi[0] + '"';
-document.getElementById('quoteAuthor').textContent = '— ' + qi[1];
-
-/* ── Particles (soft pastel circles) ── */
-var shapes = [
-  { bg: 'rgba(96,165,250,0.45)', shadow: 'rgba(96,165,250,0.3)' },
-  { bg: 'rgba(244,114,182,0.4)', shadow: 'rgba(244,114,182,0.25)' },
-  { bg: 'rgba(192,132,252,0.35)', shadow: 'rgba(192,132,252,0.2)' },
-  { bg: 'rgba(255,255,255,0.6)', shadow: 'rgba(139,92,246,0.1)' },
-];
-for (var i = 0; i < 18; i++) {
-  var p = document.createElement('div');
-  p.className = 'particle';
-  var size = 6 + Math.random() * 14;
-  var sh = shapes[Math.floor(Math.random() * shapes.length)];
-  p.style.cssText =
-    'width:' + size + 'px;' +
-    'height:' + size + 'px;' +
-    'background:' + sh.bg + ';' +
-    'left:' + (Math.random() * 100) + '%;' +
-    'animation-duration:' + (16 + Math.random() * 14) + 's;' +
-    'animation-delay:' + (Math.random() * 16) + 's;' +
-    'box-shadow:0 0 ' + (size * 1.5) + 'px ' + sh.shadow;
-  document.getElementById('particles').appendChild(p);
-}
-
-/* ── Memo ── */
-var memos = [];
-function loadMemos() { memos = JSON.parse(localStorage.getItem('dashMemos3') || '[]'); renderMemos(); }
-function renderMemos() {
-  var list = document.getElementById('memoList');
-  if (memos.length === 0) { list.innerHTML = '<div class="memo-empty">记录点什么吧~</div>'; return; }
-  var html = '';
-  for (var i = 0; i < memos.length; i++) {
-    var m = memos[i];
-    html += '<div class="memo-item"><div class="memo-check ' + (m.done?'done':'') + '" onclick="toggleMemo(' + i + ')">' + (m.done?'✓':'') + '</div><div class="memo-text ' + (m.done?'done':'') + '" onclick="toggleMemo(' + i + ')">' + m.text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>';
-  }
-  list.innerHTML = html;
-}
-function addMemo() {
-  var text = document.getElementById('memoInput').value.trim();
-  if (!text) return;
-  memos.push({text: text, done: false});
-  document.getElementById('memoInput').value = '';
-  localStorage.setItem('dashMemos3', JSON.stringify(memos));
-  renderMemos();
-}
-function toggleMemo(i) { memos[i].done = !memos[i].done; localStorage.setItem('dashMemos3', JSON.stringify(memos)); renderMemos(); }
-loadMemos();
 </script>
+
 </body>
 </html>

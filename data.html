@@ -4,71 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>公考板块 · 乐正</title>
+<link rel="stylesheet" href="style.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap');
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0f1117; --card: #1a1d2e; --card-hover: #1f2438;
-  --border: rgba(255,255,255,0.07); --text: #e2e8f0; --muted: #64748b;
-  --blue: #60a5fa; --green: #34d399; --orange: #fbbf24; --purple: #a78bfa; --red: #f87171;
-}
-body { font-family: 'Outfit','Noto Sans SC',sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 40px 20px; }
-.container { max-width: 900px; margin: 0 auto; }
-.back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 0.82rem; margin-bottom: 28px; transition: color 0.2s; }
-.back:hover { color: var(--blue); }
-h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; background: linear-gradient(135deg,var(--blue),var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 36px; }
-.add-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.3); color: var(--blue); padding: 8px 18px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; margin-bottom: 28px; transition: all 0.2s; text-decoration: none; }
-.add-btn:hover { background: rgba(96,165,250,0.25); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; transition: all 0.2s; text-decoration: none; display: block; }
-.card:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-.card-icon { font-size: 1.8rem; margin-bottom: 12px; }
-.card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-.card-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.card-meta { display: flex; gap: 8px; flex-wrap: wrap; }
-.tag { padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
-.tag-blue { background: rgba(96,165,250,0.15); color: var(--blue); }
-.tag-green { background: rgba(52,211,153,0.15); color: var(--green); }
-.tag-orange { background: rgba(251,191,36,0.15); color: var(--orange); }
-.tag-purple { background: rgba(167,139,250,0.15); color: var(--purple); }
-.empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.85rem; }
+.cards-grid { padding: 0 40px 60px; max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 </style>
 </head>
 <body>
-<div class="container">
-  <a href="index.html" class="back">← 返回首页</a>
-  <h1>公考板块</h1>
-  <p class="sub">国考 · 省考岗位数据汇总 · 持续更新</p>
-  <a href="2026_shengkao_guomao.html" class="add-btn">+ 添加数据</a>
 
-  <div class="grid">
+<nav class="apple-nav">
+  <a href="index.html">首页</a>
+  <a href="data.html" class="active">公考板块</a>
+  <a href="dreams.html">梦境</a>
+  <div class="spacer"></div>
+  <span class="nav-title">公考板块</span>
+</nav>
 
-    <a href="2026_shengkao_guomao.html" class="card">
-      <div class="card-icon">📋</div>
-      <div class="card-title">2026江西省考 · 国贸可报岗位</div>
-      <div class="card-desc">江西省公务员考试，国际经济与贸易专业可报岗位。按地区/层级分类，含推荐优先级。</div>
-      <div class="card-meta">
-        <span class="tag tag-blue">省考</span>
-        <span class="tag tag-green">江西</span>
-        <span class="tag tag-orange">2026</span>
-        <span class="tag tag-purple">更新于 04-11</span>
-      </div>
-    </a>
-
-    <a href="2026_%E6%B1%9F%E8%A5%BF%E5%9F%BA%E5%B1%82%E5%B2%97_%E5%9B%BD%E8%B4%B8.html" class="card">
-      <div class="card-icon">📋</div>
-      <div class="card-title">2026国考 · 江西岗位进面分数</div>
-      <div class="card-desc">国际经济与贸易专业可报岗位汇总。海关、人民银行、税务局。含个人推荐优先级。</div>
-      <div class="card-meta">
-        <span class="tag tag-blue">国考</span>
-        <span class="tag tag-green">江西</span>
-        <span class="tag tag-orange">2026</span>
-        <span class="tag tag-purple">更新于 04-11</span>
-      </div>
-    </a>
-
-  </div>
+<div class="apple-hero">
+  <h1>📋 公考板块</h1>
+  <p>国考 · 省考岗位数据汇总 · 持续更新</p>
 </div>
+
+<div class="cards-grid">
+
+  <a href="2026_shengkao_guomao.html" class="apple-card">
+    <div class="card-icon">📋</div>
+    <div class="card-title">2026江西省考 · 国贸可报岗位</div>
+    <div class="card-desc">江西省公务员考试，国际经济与贸易专业可报岗位。按地区/层级分类，含推荐优先级。不含进面分数。</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-blue">省考</span>
+      <span class="apple-tag tag-green">江西</span>
+      <span class="apple-tag tag-orange">2026</span>
+      <span class="apple-tag tag-purple">更新于 04-11</span>
+    </div>
+  </a>
+
+  <a href="2026_%E6%B1%9F%E8%A5%BF%E5%9F%BA%E5%B1%82%E5%B2%97_%E5%9B%BD%E8%B4%B8.html" class="apple-card">
+    <div class="card-icon">📊</div>
+    <div class="card-title">2026国考 · 江西岗位进面分数</div>
+    <div class="card-desc">国际经济与贸易专业可报岗位汇总。海关、人民银行、税务局。含个人推荐优先级。专业要求已标注需核实。</div>
+    <div class="card-tags">
+      <span class="apple-tag tag-blue">国考</span>
+      <span class="apple-tag tag-green">江西</span>
+      <span class="apple-tag tag-orange">2026</span>
+      <span class="apple-tag tag-purple">更新于 04-11</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="apple-footer">数据来源：国家公务员局、华图教育、中公教育 · 仅供参考</div>
+
 </body>
 </html>
