@@ -49,7 +49,7 @@ html { scroll-behavior: smooth; }
 
 <!-- Hero -->
 <div class="apple-hero">
-  <h1>你好，乐正</h1>
+  <h1 id="greetingTitle">你好，程乐正</h1>
   <p>这里是属于你的个人数据中枢，所有生成的内容都在这里。</p>
   <div class="profile-bar"></div>
   <div class="weather-widget" id="weatherWidget">
@@ -116,6 +116,15 @@ function updateClock() {
   var days = ['日','一','二','三','四','五','六'];
   document.getElementById('clockDate').textContent =
     now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 星期' + days[now.getDay()];
+  // Time-based greeting
+  var hour = now.getHours();
+  var greet = '';
+  if (hour >= 5 && hour < 11) greet = '早上好';
+  else if (hour >= 11 && hour < 13) greet = '中午好';
+  else if (hour >= 13 && hour < 18) greet = '下午好';
+  else if (hour >= 18 && hour < 22) greet = '晚上好';
+  else greet = '夜深了';
+  document.getElementById('greetingTitle').textContent = greet + '，程乐正';
 }
 setInterval(updateClock, 1000);
 updateClock();
