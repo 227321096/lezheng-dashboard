@@ -13,86 +13,94 @@ body { background: var(--bg); }
   padding: 12px 20px;
   color: var(--accent); font-size: 0.9rem;
   text-decoration: none;
-  margin: 24px 0 0 32px;
 }
 .back-btn:hover { opacity: 0.7; }
 
 .page-header {
   text-align: center;
-  padding: 32px 20px 16px;
+  padding: 24px 20px 8px;
 }
-.page-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.page-header .sub { color: var(--text-secondary); font-size: 0.9rem; }
+.page-header h1 { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+.page-header .sub { color: var(--text-secondary); font-size: 0.88rem; margin-top: 4px; }
 
+/* Stats Grid */
 .mm-grid {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 0 20px 60px;
+  max-width: 720px; margin: 0 auto;
+  padding: 12px 20px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 .mm-stat {
   background: var(--white);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 22px 16px;
-  text-align: center;
+  padding: 18px 12px; text-align: center;
 }
-.mm-stat .num {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-.mm-stat .num.accent { color: var(--accent); }
+.mm-stat .num { font-size: 2rem; font-weight: 700; line-height: 1; }
+.mm-stat .num.blue { color: var(--accent); }
 .mm-stat .num.orange { color: var(--orange); }
-.mm-stat .label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-top: 6px;
-}
+.mm-stat .num.green { color: var(--green); }
+.mm-stat .label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px; }
 
+/* Chart Cards */
 .mm-card {
   background: var(--white);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  margin: 14px auto;
+  max-width: 720px;
   padding: 22px 24px;
-  margin-bottom: 14px;
 }
 .mm-card h2 {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem; font-weight: 600;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: uppercase; letter-spacing: 0.06em;
   margin-bottom: 14px;
 }
-.record-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-.record-item:last-child { border-bottom: none; }
-.record-item .date { font-size: 0.9rem; color: var(--text-secondary); }
-.record-item .count { font-size: 0.95rem; font-weight: 600; color: var(--text); }
-.record-item .count span { font-size: 0.75rem; font-weight: 400; color: var(--text-secondary); }
+.chart-wrap { position: relative; height: 180px; }
+.chart-wrap canvas { width: 100% !important; height: 100% !important; }
 
-.today-words { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Word distribution bar */
+.dist-bar {
+  display: flex; height: 12px; border-radius: 6px; overflow: hidden;
+  margin-bottom: 8px;
+}
+.dist-bar .bar-mastered { background: var(--green); }
+.dist-bar .bar-familiar { background: var(--orange); }
+.dist-bar .bar-forgetting { background: var(--red); opacity: 0.7; }
+
+.dist-legend {
+  display: flex; gap: 16px; font-size: 0.78rem; color: var(--text-secondary);
+  margin-top: 6px;
+}
+.dist-legend span { display: flex; align-items: center; gap: 4px; }
+.dist-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block;
+}
+.dist-dot.mastered { background: var(--green); }
+.dist-dot.familiar { background: var(--orange); }
+.dist-dot.forgetting { background: var(--red); }
+
+/* Word list */
+.word-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .word-chip {
   background: rgba(0,113,227,0.08);
   color: var(--accent);
-  border-radius: 100px;
-  padding: 4px 12px;
-  font-size: 0.82rem;
-  font-weight: 500;
+  border-radius: 100px; padding: 3px 11px;
+  font-size: 0.8rem; font-weight: 500;
+  cursor: default; transition: background 0.15s;
 }
+.word-chip:hover { background: rgba(0,113,227,0.15); }
+.word-chip.remembered { background: rgba(52,199,89,0.1); color: var(--green); }
+.word-chip.forgot { background: rgba(255,59,48,0.08); color: var(--red); }
 
-.loading { text-align: center; padding: 40px; color: var(--text-secondary); }
-.error-msg { text-align: center; padding: 40px; color: var(--red); }
-.hidden { display: none; }
+.section-sub { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; }
+
+.loading { text-align: center; padding: 40px; color: var(--text-secondary); font-size: 0.9rem; }
+.error-msg { text-align: center; padding: 30px; color: var(--red); font-size: 0.9rem; }
+.empty-msg { text-align: center; padding: 24px; color: var(--text-secondary); font-size: 0.88rem; }
 </style>
 </head>
 <body>
@@ -107,11 +115,11 @@ body { background: var(--bg); }
 <!-- Stats Row -->
 <div class="mm-grid">
   <div class="mm-stat">
-    <div class="num accent" id="statTotal">--</div>
+    <div class="num blue" id="statTotal">--</div>
     <div class="label">今日目标</div>
   </div>
   <div class="mm-stat">
-    <div class="num" id="statFinished">--</div>
+    <div class="num green" id="statFinished">--</div>
     <div class="label">已完成</div>
   </div>
   <div class="mm-stat">
@@ -120,31 +128,47 @@ body { background: var(--bg); }
   </div>
 </div>
 
-<div style="max-width:700px;margin:0 auto;padding:0 20px 60px">
-  <!-- Today's Words -->
-  <div class="mm-card" id="todayCard">
-    <h2>今日待复习</h2>
-    <div class="today-words" id="todayWords">
-      <div class="loading">加载中…</div>
-    </div>
-  </div>
+<!-- Weekly Bar Chart -->
+<div class="mm-card" id="weeklyCard">
+  <h2>📊 近7天学习量</h2>
+  <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
+</div>
 
-  <!-- Recent Records -->
-  <div class="mm-card" id="recordsCard">
-    <h2>最近学习记录</h2>
-    <div id="recordsList">
-      <div class="loading">加载中…</div>
-    </div>
+<!-- Mastery Distribution -->
+<div class="mm-card" id="distCard">
+  <h2>🧠 单词掌握分布</h2>
+  <div class="dist-bar" id="distBar">
+    <div class="bar-mastered" id="barMastered" style="width:0%"></div>
+    <div class="bar-familiar" id="barFamiliar" style="width:0%"></div>
+    <div class="bar-forgetting" id="barForgetting" style="width:0%"></div>
+  </div>
+  <div class="dist-legend">
+    <span><i class="dist-dot mastered"></i>已掌握 <b id="pctMastered">--%</b></span>
+    <span><i class="dist-dot familiar"></i>记忆模糊 <b id="pctFamiliar">--%</b></span>
+    <span><i class="dist-dot forgetting"></i>学习中 <b id="pctForgetting">--%</b></span>
   </div>
 </div>
 
+<!-- Today's Words -->
+<div class="mm-card" id="todayCard">
+  <h2>📋 今日待复习</h2>
+  <div class="section-sub" id="todaySub">加载中…</div>
+  <div class="word-list" id="todayWords"><div class="loading">加载中…</div></div>
+</div>
+
+<!-- Recent Words -->
+<div class="mm-card" id="recentCard">
+  <h2>🕐 最近学过的单词</h2>
+  <div class="word-list" id="recentWords"><div class="loading">加载中…</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 var TOKEN = '48e725ab5b62032496eb647acd9e1174d1cd4f9c74027fe3e03b786f6793b6a8';
 var API = 'https://open.maimemo.com/open/api/v1';
 
 function api(path, method, body) {
   method = method || 'GET';
-  body = body || {};
   var opts = {
     method: method,
     headers: {
@@ -153,78 +177,178 @@ function api(path, method, body) {
       'Content-Type': 'application/json'
     }
   };
-  if (method !== 'GET' && Object.keys(body).length > 0) {
+  if (method !== 'GET' && body) {
     opts.body = JSON.stringify(body);
-  }
-  if (method === 'GET') {
-    path = path + (path.indexOf('?') > -1 ? '&' : '?') + new URLSearchParams(body).toString();
   }
   return fetch(API + path, opts).then(function(r) { return r.json(); });
 }
 
-function renderStudyProgress(data) {
+// Chart instances
+var weeklyChart = null;
+
+function drawWeeklyChart(records) {
+  // Build last 7 days
+  var days = [];
+  var counts = [];
+  var labels = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var dateStr = d.getMonth()+1 + '/' + d.getDate();
+    var dayRecords = records.filter(function(r) {
+      var rd = new Date(r.date);
+      return rd.toDateString() === d.toDateString();
+    });
+    var count = dayRecords.reduce ? dayRecords.reduce(function(s, r) { return s + (r.finished || 0); }, 0) : 0;
+    labels.push(dateStr);
+    counts.push(count);
+  }
+
+  var ctx = document.getElementById('weeklyChart').getContext('2d');
+  if (weeklyChart) weeklyChart.destroy();
+  weeklyChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '单词数',
+        data: counts,
+        backgroundColor: 'rgba(0,113,227,0.75)',
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: function(ctx) { return ctx.raw + ' 词'; } }
+      }},
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 10, font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderStats(data) {
   var p = data.progress;
   document.getElementById('statTotal').textContent = p.total || 0;
   document.getElementById('statFinished').textContent = p.finished || 0;
-  var mins = Math.round((p.study_time || 0) / 60);
-  document.getElementById('statTime').textContent = mins || '0';
+  document.getElementById('statTime').textContent = Math.round((p.study_time || 0) / 60) || '0';
+  var pct = p.total > 0 ? Math.round(p.finished / p.total * 100) : 0;
   document.getElementById('sub').textContent = p.total > 0
-    ? ('今日进度: ' + p.finished + ' / ' + p.total + ' 词')
+    ? ('今日: ' + p.finished + ' / ' + p.total + ' 词  ·  ' + pct + '%')
     : '今日暂无学习任务';
 }
 
-function renderTodayItems(data) {
+function renderToday(data) {
   var el = document.getElementById('todayWords');
+  var sub = document.getElementById('todaySub');
   if (!data.items || data.items.length === 0) {
-    el.innerHTML = '<span style="color:var(--text-secondary);font-size:0.9rem">今日已全部完成 ✓</span>';
+    el.innerHTML = '<div class="empty-msg">✓ 今日已全部完成，继续保持！</div>';
+    sub.textContent = '';
     return;
   }
+  sub.textContent = '共 ' + data.items.length + ' 词待复习';
   var html = '';
-  data.items.slice(0, 30).forEach(function(item) {
+  data.items.slice(0, 50).forEach(function(item) {
     html += '<span class="word-chip">' + item.spelling + '</span>';
   });
-  if (data.items.length > 30) {
-    html += '<span class="word-chip">+' + (data.items.length - 30) + ' 更多</span>';
-  }
+  if (data.items.length > 50) html += '<span class="word-chip">+' + (data.items.length - 50) + ' 更多</span>';
   el.innerHTML = html;
 }
 
-function renderRecords(data) {
-  var el = document.getElementById('recordsList');
+function renderRecent(data) {
+  var el = document.getElementById('recentWords');
   if (!data.records || data.records.length === 0) {
-    el.innerHTML = '<div style="color:var(--text-secondary);font-size:0.9rem;text-align:center;padding:20px">暂无学习记录</div>';
+    el.innerHTML = '<div class="empty-msg">暂无记录，明天开始学习吧</div>';
+    return;
+  }
+  // Show words from recent records
+  var words = [];
+  data.records.slice(0, 3).forEach(function(r) {
+    if (r.words) words = words.concat(r.words.slice(0, 20));
+  });
+  // If no nested words, show count chips
+  if (words.length === 0) {
+    var html = '';
+    data.records.slice(0, 7).forEach(function(r) {
+      var d = new Date(r.date);
+      html += '<span class="word-chip remembered">' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + r.finished + '词</span>';
+    });
+    el.innerHTML = html || '<div class="empty-msg">暂无单词明细</div>';
     return;
   }
   var html = '';
-  data.records.slice(0, 10).forEach(function(r) {
-    var d = new Date(r.date);
-    var dateStr = d.getMonth()+1 + '月' + d.getDate() + '日';
-    html += '<div class="record-item">'
-      + '<span class="date">' + dateStr + '</span>'
-      + '<span class="count">' + r.finished + ' <span>词 · ' + Math.round(r.study_time/60) + '分钟</span></span>'
-      + '</div>';
+  words.slice(0, 30).forEach(function(w) {
+    html += '<span class="word-chip">' + w.spelling + '</span>';
   });
   el.innerHTML = html;
+}
+
+function renderDistribution(data) {
+  // Use records to estimate; if no detailed data show placeholder
+  var mastered = 0, familiar = 0, forgetting = 0;
+  if (data.records && data.records.length > 0) {
+    data.records.forEach(function(r) {
+      if (r.remembered_count !== undefined) mastered += r.remembered_count || 0;
+      if (r.forgot_count !== undefined) forgetting += r.forgot_count || 0;
+      familiar += Math.max(0, (r.finished || 0) - (r.remembered_count || 0) - (r.forgot_count || 0));
+    });
+  }
+  var total = mastered + familiar + forgetting;
+  if (total === 0) {
+    // Show 0 state - use today's items as "in progress"
+    document.getElementById('pctMastered').textContent = '--%';
+    document.getElementById('pctFamiliar').textContent = '--%';
+    document.getElementById('pctForgetting').textContent = '--%';
+    document.getElementById('barMastered').style.width = '0%';
+    document.getElementById('barFamiliar').style.width = '0%';
+    document.getElementById('barForgetting').style.width = '100%';
+    return;
+  }
+  var pM = Math.round(mastered/total*100), pF = Math.round(familiar/total*100), pFG = 100 - pM - pF;
+  document.getElementById('pctMastered').textContent = pM + '%';
+  document.getElementById('pctFamiliar').textContent = pF + '%';
+  document.getElementById('pctForgetting').textContent = pFG + '%';
+  document.getElementById('barMastered').style.width = pM + '%';
+  document.getElementById('barFamiliar').style.width = pF + '%';
+  document.getElementById('barForgetting').style.width = pFG + '%';
 }
 
 function fail(msg) {
   document.getElementById('sub').textContent = '加载失败';
-  document.getElementById('todayWords').innerHTML = '<div class="error-msg">' + msg + '</div>';
-  document.getElementById('recordsList').innerHTML = '<div class="error-msg">' + msg + '</div>';
+  ['todayWords','recentWords'].forEach(function(id) {
+    document.getElementById(id).innerHTML = '<div class="error-msg">' + msg + '</div>';
+  });
 }
 
 // Load all data
 api('/study/get_study_progress', 'POST', {}).then(function(d) {
-  if (d.success) renderStudyProgress(d.data);
-  else fail(d.errors ? d.errors[0].msg : '获取学习进度失败');
+  if (d.success) {
+    renderStats(d);
+  }
 });
 
 api('/study/get_today_items', 'POST', {}).then(function(d) {
-  if (d.success) renderTodayItems(d.data);
+  if (d.success) renderToday(d);
+  else document.getElementById('todayWords').innerHTML = '<div class="empty-msg">暂无待复习</div>';
 });
 
 api('/study/query_study_records', 'POST', {}).then(function(d) {
-  if (d.success) renderRecords(d.data);
+  if (!d.success) {
+    document.getElementById('recentWords').innerHTML = '<div class="empty-msg">暂无记录</div>';
+    return;
+  }
+  renderDistribution(d);
+  renderRecent(d);
+  if (d.records && d.records.length > 0) {
+    drawWeeklyChart(d.records);
+  } else {
+    document.getElementById('weeklyCard').style.display = 'none';
+  }
 });
 </script>
 </body>

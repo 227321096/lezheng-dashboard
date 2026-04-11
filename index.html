@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>乐正 · Dashboard</title>
+<meta name="description" content="个人数据中枢，公考进度，天气，墨墨背单词">
+<meta name="theme-color" content="#0071e3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="乐正">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
 <style>
 /* Dashboard-specific overrides */
@@ -44,6 +52,11 @@ html { scroll-behavior: smooth; }
   <a href="data.html">公考板块</a>
   <a href="dreams.html">梦境</a>
   <div class="spacer"></div>
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深色模式" title="切换深色模式">
+    <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
   <span class="nav-title">乐正 · Dashboard</span>
 </nav>
 
@@ -66,6 +79,39 @@ html { scroll-behavior: smooth; }
   <div id="clockTime">--:--</div>
   <div id="clockSec">--</div>
   <div id="clockDate"></div>
+</div>
+
+<!-- Countdown -->
+<div class="countdown-bar" id="countdownBar">
+  <div class="countdown-item">
+    <span class="cd-num" id="cdDays">--</span>
+    <span class="cd-label">天</span>
+  </div>
+  <div class="countdown-sep">:</div>
+  <div class="countdown-item">
+    <span class="cd-num" id="cdHours">--</span>
+    <span class="cd-label">时</span>
+  </div>
+  <div class="countdown-sep">:</div>
+  <div class="countdown-item">
+    <span class="cd-num" id="cdMins">--</span>
+    <span class="cd-label">分</span>
+  </div>
+  <div class="countdown-sep">:</div>
+  <div class="countdown-item">
+    <span class="cd-num" id="cdSecs">--</span>
+    <span class="cd-label">秒</span>
+  </div>
+  <span class="cd-target">2026国考倒计时</span>
+</div>
+
+<!-- Todo -->
+<div class="todo-section">
+  <div class="todo-header">
+    <span class="todo-title">今日目标</span>
+    <button class="todo-add" id="todoAdd" aria-label="添加目标">+</button>
+  </div>
+  <div class="todo-list" id="todoList"></div>
 </div>
 
 <!-- Grid -->
@@ -212,6 +258,107 @@ if (navigator.geolocation) {
 }
 </script>
 
+<!-- Countdown + Todo + Theme JS -->
+<script>
+// —— Countdown (2026 国考：11月27日) ——
+var EXAM_DATE = new Date('2026-11-27T08:30:00+08:00');
+function updateCountdown() {
+  var now = new Date();
+  var diff = EXAM_DATE - now;
+  if (diff <= 0) {
+    document.getElementById('cdDays').textContent = '0';
+    document.getElementById('cdHours').textContent = '0';
+    document.getElementById('cdMins').textContent = '0';
+    document.getElementById('cdSecs').textContent = '0';
+    return;
+  }
+  var days = Math.floor(diff / 86400000);
+  var hours = Math.floor((diff % 86400000) / 3600000);
+  var mins = Math.floor((diff % 3600000) / 60000);
+  var secs = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cdDays').textContent = days;
+  document.getElementById('cdHours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cdMins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('cdSecs').textContent = String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// —— Todo List (localStorage) ——
+var TODO_KEY = 'lezheng_todos';
+function getTodos() {
+  try { return JSON.parse(localStorage.getItem(TODO_KEY)) || []; } catch(e) { return []; }
+}
+function saveTodos(todos) {
+  localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+}
+function renderTodos() {
+  var todos = getTodos();
+  var el = document.getElementById('todoList');
+  if (todos.length === 0) {
+    el.innerHTML = '<div class="todo-empty">点击 + 添加今日目标</div>';
+    return;
+  }
+  var html = '';
+  todos.forEach(function(t, i) {
+    html += '<div class="todo-item">'
+      + '<div class="todo-check' + (t.done ? ' done' : '') + '" data-i="' + i + '" onclick="toggleTodo(' + i + ')"></div>'
+      + '<span class="todo-text' + (t.done ? ' done' : '') + '" contenteditable="true" data-i="' + i + '" onblur="saveTodoText(' + i + ',this.textContent)">' + escapeHtml(t.text) + '</span>'
+      + '<button class="todo-del" onclick="delTodo(' + i + ')" aria-label="删除">✕</button>'
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+window.toggleTodo = function(i) {
+  var todos = getTodos();
+  todos[i].done = !todos[i].done;
+  saveTodos(todos);
+  renderTodos();
+};
+window.delTodo = function(i) {
+  var todos = getTodos();
+  todos.splice(i, 1);
+  saveTodos(todos);
+  renderTodos();
+};
+window.saveTodoText = function(i, text) {
+  var todos = getTodos();
+  if (todos[i]) { todos[i].text = text.trim() || '未命名'; saveTodos(todos); }
+};
+window.addTodo = function() {
+  var todos = getTodos();
+  todos.unshift({ text: '新目标', done: false });
+  saveTodos(todos);
+  renderTodos();
+  // Focus the new item
+  var items = document.querySelectorAll('.todo-text');
+  if (items[0]) { items[0].focus(); document.execCommand('selectAll', false, null); }
+};
+document.getElementById('todoAdd').addEventListener('click', addTodo);
+renderTodos();
+
+// —— Theme Toggle ——
+function applyTheme(dark) {
+  if (dark) {
+    document.body.classList.add('dark');
+    document.getElementById('themeIcon').innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    document.body.classList.remove('dark');
+    document.getElementById('themeIcon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+}
+// Init theme
+var savedTheme = localStorage.getItem('theme');
+applyTheme(savedTheme === 'dark');
+document.getElementById('themeToggle').addEventListener('click', function() {
+  applyTheme(!document.body.classList.contains('dark'));
+});
+</script>
+
 <!-- Chat Launcher -->
 <div class="chat-launcher" id="chatLauncher">
   <a class="chat-btn" id="chatBtn" href="http://127.0.0.1:18789/?token=767b309e37354f0c0cde1a40861d6400fffc5d8553e1461a" aria-label="与乐正对话">
@@ -220,6 +367,13 @@ if (navigator.geolocation) {
     </svg>
   </a>
 </div>
+
+<script>
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW registration failed:', e); });
+}
+</script>
 
 </body>
 </html>
