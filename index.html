@@ -53,6 +53,7 @@ html { scroll-behavior: smooth; }
   <p>这里是属于你的个人数据中枢，所有生成的内容都在这里。</p>
   <div class="profile-bar"></div>
   <div class="weather-widget" id="weatherWidget">
+    <span class="weather-loc" id="wLoc">定位中…</span>
     <span class="weather-icon" id="wIcon">--</span>
     <span class="weather-temp" id="wTemp">--</span>
     <span class="weather-detail" id="wDetail">--</span>
@@ -119,19 +120,101 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// Weather widget — reads from local weather.json
-fetch('weather.json')
-  .then(r => r.json())
-  .then(data => {
-    document.getElementById('wIcon').textContent = data.weather;
-    document.getElementById('wTemp').textContent = data.temp;
-    document.getElementById('wDetail').textContent = data.humidity + ' ' + data.wind;
-  })
-  .catch(() => {
-    document.getElementById('wIcon').textContent = '🌤';
-    document.getElementById('wTemp').textContent = '--';
-    document.getElementById('wDetail').textContent = '天气加载失败';
-  });
+// ——— Weather Widget ———
+// Strategy: GPS (Geolocation API) → Open-Meteo → IP fallback → wttr.in
+var weatherDone = false;
+
+function getWeatherIcon(code) {
+  if (code === 0) return '☀️';
+  if (code <= 3) return '⛅';
+  if (code <= 49) return '🌫';
+  if (code <= 59) return '🌧';
+  if (code <= 69) return '🌧';
+  if (code <= 79) return '🌨';
+  if (code <= 84) return '🌨';
+  if (code <= 86) return '❄️';
+  if (code <= 99) return '⛈';
+  return '🌤';
+}
+
+function renderWeather(location, icon, temp, humidity, wind) {
+  if (weatherDone) return;
+  weatherDone = true;
+  document.getElementById('wLoc').textContent = location;
+  document.getElementById('wIcon').textContent = icon;
+  document.getElementById('wTemp').textContent = temp;
+  document.getElementById('wDetail').textContent = humidity + ' ' + wind;
+}
+
+// Mode A: GPS → Open-Meteo (precise, no API key)
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude.toFixed(4);
+      var lon = pos.coords.longitude.toFixed(4);
+
+      // Fetch weather by coordinates
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia/Shanghai')
+        .then(r => r.json())
+        .then(data => {
+          var curr = data.current;
+          var icon = getWeatherIcon(curr.weather_code);
+          var temp = Math.round(curr.temperature_2m) + '°C';
+          var humidity = curr.relative_humidity_2m + '%';
+          var wind = Math.round(curr.wind_speed_10m) + 'km/h';
+
+          // Reverse geocode to get district name
+          fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json&accept-language=zh')
+            .then(r => r.json())
+            .then(geo => {
+              var district = '';
+              var addr = geo.address || {};
+              district = addr.county || addr.district || addr.city || addr.town || addr.province || '未知';
+              renderWeather(district, icon, temp, humidity, wind);
+            })
+            .catch(() => {
+              renderWeather('上饶', icon, temp, humidity, wind);
+            });
+        })
+        .catch(function() {
+          tryIP();
+        });
+    },
+    function(err) {
+      tryIP();
+    },
+    {timeout: 8000}
+  );
+} else {
+  tryIP();
+}
+
+// Mode B: IP-based fallback → wttr.in
+function tryIP() {
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(ip => {
+      var city = ip.city || '';
+      var region = ip.region || '';
+      var loc = city || region || '上饶';
+      fetch('https://wttr.in/' + encodeURIComponent(loc) + '?format=%c+%t+%h+%w&lang=zh&m')
+        .then(r => r.text())
+        .then(txt => {
+          var parts = txt.trim().split(' ');
+          var icon = parts[0] || '🌤';
+          var temp = parts[1] || '--';
+          var humidity = parts[2] || '--';
+          var wind = parts.slice(3).join(' ') || '--';
+          renderWeather(city || region || '未知', icon, temp, humidity, wind);
+        })
+        .catch(function() {
+          renderWeather('上饶', '🌤', '--', '--', '--');
+        });
+    })
+    .catch(function() {
+      renderWeather('上饶', '🌤', '--', '--', '--');
+    });
+}
 </script>
 
 </body>
