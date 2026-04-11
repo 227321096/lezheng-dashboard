@@ -78,24 +78,39 @@ body {
   margin: 0 auto;
 }
 
-/* Weather Widget */
+/* Weather Widget (homepage) */
 .weather-widget {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   margin-top: 16px;
-  padding: 8px 16px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  backdrop-filter: blur(8px);
+  padding: 10px 22px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 100px;
+  border: 1px solid rgba(0,0,0,0.08);
+  font-size: 1rem;
+  color: var(--text);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
 }
-.weather-icon { font-size: 1.1rem; }
-.weather-temp { font-weight: 600; color: var(--text); }
-.weather-detail { font-size: 0.85rem; }
-.weather-loc { font-size: 0.8rem; color: var(--accent); font-weight: 500; padding-right: 2px; }
+.weather-widget:hover {
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.weather-icon { font-size: 1.6rem; line-height: 1; }
+.weather-temp { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+.weather-sep { color: var(--text-secondary); font-size: 0.9rem; }
+.weather-humidity { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; }
+.weather-tip {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  letter-spacing: 0.01em;
+  min-height: 1em;
+}
 
 /* Apple Grid */
 .apple-grid {

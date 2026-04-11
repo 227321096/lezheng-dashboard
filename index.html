@@ -52,12 +52,13 @@ html { scroll-behavior: smooth; }
   <h1 id="greetingTitle">你好，程乐正</h1>
   <p>这里是属于你的个人数据中枢，所有生成的内容都在这里。</p>
   <div class="profile-bar"></div>
-  <div class="weather-widget" id="weatherWidget">
-    <span class="weather-loc" id="wLoc">定位中…</span>
-    <span class="weather-icon" id="wIcon">--</span>
-    <span class="weather-temp" id="wTemp">--</span>
-    <span class="weather-detail" id="wDetail">--</span>
-  </div>
+  <a class="weather-widget" id="weatherWidget" href="weather.html">
+    <span class="weather-icon" id="wIcon">⏳</span>
+    <span class="weather-temp" id="wTemp">--°C</span>
+    <span class="weather-sep">·</span>
+    <span class="weather-humidity" id="wHum">--%</span>
+  </a>
+  <div class="weather-tip" id="wTip">--</div>
 </div>
 
 <!-- Clock -->
@@ -130,9 +131,7 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ——— Weather Widget ———
-// Strategy: GPS (Geolocation API) → Open-Meteo → IP fallback → wttr.in
-var weatherDone = false;
-
+// GPS优先 → Open-Meteo实时数据（无key，支持CORS）
 function getWeatherIcon(code) {
   if (code === 0) return '☀️';
   if (code <= 3) return '⛅';
@@ -145,84 +144,62 @@ function getWeatherIcon(code) {
   if (code <= 99) return '⛈';
   return '🌤';
 }
-
-function renderWeather(location, icon, temp, humidity, wind) {
-  if (weatherDone) return;
-  weatherDone = true;
-  document.getElementById('wLoc').textContent = location;
-  document.getElementById('wIcon').textContent = icon;
-  document.getElementById('wTemp').textContent = temp;
-  document.getElementById('wDetail').textContent = humidity + ' ' + wind;
+function getWeatherTip(code, temp) {
+  var t = Math.round(temp);
+  if (code === 0 && t > 28) return '紫外线较强，户外注意防晒';
+  if (code === 0 && t > 20) return '今日晴朗，适宜户外活动';
+  if (code === 0) return '天气晴好，宜通风晾晒';
+  if (code <= 3) return '多云天气，外出请合时衣物';
+  if (code <= 49) return '有雾，能见度较差，出行注意安全';
+  if (code <= 69) return '有雨，出门记得带伞';
+  if (code <= 79) return '有雪，注意防寒保暖';
+  if (code <= 84) return '阵雨频繁，外出请带伞';
+  if (code <= 86) return '大雪天气，建议减少外出';
+  if (code <= 99) return '雷暴天气，避免户外活动';
+  if (t >= 35) return '高温预警，注意防暑降温';
+  if (t <= 5) return '气温较低，注意防寒保暖';
+  return '天气变化快，出行请留意最新预报';
 }
-
-// Mode A: GPS → Open-Meteo (precise, no API key)
+function showWeather(icon, temp, humidity, code) {
+  document.getElementById('wIcon').textContent = icon;
+  document.getElementById('wTemp').textContent = Math.round(temp) + '°C';
+  document.getElementById('wHum').textContent = humidity + '%';
+  document.getElementById('wTip').textContent = getWeatherTip(code, temp);
+}
+function loadByCoords(lat, lon) {
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon
+    + '&current=temperature_2m,relative_humidity_2m,weather_code&timezone=Asia/Shanghai')
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var c = data.current;
+    showWeather(getWeatherIcon(c.weather_code), c.temperature_2m, c.relative_humidity_2m, c.weather_code);
+  })
+  .catch(function() {
+    document.getElementById('wIcon').textContent = '🌤';
+    document.getElementById('wTemp').textContent = '--°C';
+    document.getElementById('wHum').textContent = '--%';
+    document.getElementById('wTip').textContent = '天气加载失败，请检查网络';
+  });
+}
+function loadByIP() {
+  fetch('https://ipapi.co/json/')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var lat = d.latitude, lon = d.longitude;
+      loadByCoords(lat.toFixed(4), lon.toFixed(4));
+    })
+    .catch(function() {
+      loadByCoords(28.47, 117.94);
+    });
+}
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      var lat = pos.coords.latitude.toFixed(4);
-      var lon = pos.coords.longitude.toFixed(4);
-
-      // Fetch weather by coordinates
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia/Shanghai')
-        .then(r => r.json())
-        .then(data => {
-          var curr = data.current;
-          var icon = getWeatherIcon(curr.weather_code);
-          var temp = Math.round(curr.temperature_2m) + '°C';
-          var humidity = curr.relative_humidity_2m + '%';
-          var wind = Math.round(curr.wind_speed_10m) + 'km/h';
-
-          // Reverse geocode to get district name
-          fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json&accept-language=zh')
-            .then(r => r.json())
-            .then(geo => {
-              var district = '';
-              var addr = geo.address || {};
-              district = addr.county || addr.district || addr.city || addr.town || addr.province || '未知';
-              renderWeather(district, icon, temp, humidity, wind);
-            })
-            .catch(() => {
-              renderWeather('上饶', icon, temp, humidity, wind);
-            });
-        })
-        .catch(function() {
-          tryIP();
-        });
-    },
-    function(err) {
-      tryIP();
-    },
+    function(pos) { loadByCoords(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)); },
+    function() { loadByIP(); },
     {timeout: 8000}
   );
 } else {
-  tryIP();
-}
-
-// Mode B: IP-based fallback → wttr.in
-function tryIP() {
-  fetch('https://ipapi.co/json/')
-    .then(r => r.json())
-    .then(ip => {
-      var city = ip.city || '';
-      var region = ip.region || '';
-      var loc = city || region || '上饶';
-      fetch('https://wttr.in/' + encodeURIComponent(loc) + '?format=%c+%t+%h+%w&lang=zh&m')
-        .then(r => r.text())
-        .then(txt => {
-          var parts = txt.trim().split(' ');
-          var icon = parts[0] || '🌤';
-          var temp = parts[1] || '--';
-          var humidity = parts[2] || '--';
-          var wind = parts.slice(3).join(' ') || '--';
-          renderWeather(city || region || '未知', icon, temp, humidity, wind);
-        })
-        .catch(function() {
-          renderWeather('上饶', '🌤', '--', '--', '--');
-        });
-    })
-    .catch(function() {
-      renderWeather('上饶', '🌤', '--', '--', '--');
-    });
+  loadByIP();
 }
 </script>
 
