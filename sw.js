@@ -1,10 +1,16 @@
-const CACHE = 'lezheng-dashboard-v1';
+const CACHE = 'lezheng-dashboard-v3';
 const ASSETS = [
   '/lezheng-dashboard/',
   '/lezheng-dashboard/index.html',
+  '/lezheng-dashboard/positions.html',
+  '/lezheng-dashboard/data.html',
+  '/lezheng-dashboard/dreams.html',
+  '/lezheng-dashboard/logs.html',
   '/lezheng-dashboard/weather.html',
   '/lezheng-dashboard/maimemo.html',
+  '/lezheng-dashboard/daily-tip.json',
   '/lezheng-dashboard/style.css',
+  '/lezheng-dashboard/manifest.json',
   '/lezheng-dashboard/icon-192.png',
   '/lezheng-dashboard/icon-512.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap',
