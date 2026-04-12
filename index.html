@@ -78,7 +78,7 @@ html { scroll-behavior: smooth; }
   <a href="data.html">公考板块</a>
   <a href="dreams.html">梦境</a>
   <div class="spacer"></div>
-  <button class="theme-toggle" id="themeToggle" aria-label="切换深色模式" title="切换深色模式">
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切换深色模式" title="切换深色模式">
     <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
     </svg>
@@ -227,7 +227,24 @@ function updateClock() {
   else if (hour >= 18 && hour < 22) greet = '晚上好';
   else greet = '夜深了';
   document.getElementById('greetingTitle').textContent = greet + '，程乐正';
-}
+
+  // Countdown to 2027 National Exam (Nov 29, 2026)
+  var exam = new Date(2026, 10, 29);
+  var diff = exam - now;
+  if (diff > 0) {
+    var d = Math.floor(diff / 86400000);
+    var hrs = Math.floor((diff % 86400000) / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+    var dEl = document.getElementById('cdDays');
+    var hEl = document.getElementById('cdHours');
+    var mEl = document.getElementById('cdMins');
+    var sEl = document.getElementById('cdSecs');
+    if (dEl) dEl.textContent = String(d).padStart(2,'0');
+    if (hEl) hEl.textContent = String(hrs).padStart(2,'0');
+    if (mEl) mEl.textContent = String(mins).padStart(2,'0');
+    if (sEl) sEl.textContent = String(secs).padStart(2,'0');
+  }}
 setInterval(updateClock, 1000);
 updateClock();
 
@@ -392,6 +409,11 @@ function setSyncStatus(msg, color) {
   if (!el) return;
   el.textContent = msg;
   el.style.color = color || 'var(--text-secondary)';
+}
+
+function toggleTheme() {
+  var isDark = document.body.classList.contains('dark');
+  applyTheme(!isDark);
 }
 
 function loadSyncData() {
