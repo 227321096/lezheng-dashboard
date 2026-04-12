@@ -1,2 +1,0 @@
-# lezheng-dashboard
-Personal Dashboard
