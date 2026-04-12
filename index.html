@@ -492,11 +492,6 @@ fetch('daily-tip.json?t=' + Date.now())
   })
   .catch(function() {});
 
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.updated) setSyncStatus('已同步 ' + data.updated, 'var(--green)');
-  }).catch(function() {});
-
 // —— Theme Toggle ——
 function applyTheme(dark) {
   if (dark) {
@@ -514,7 +509,6 @@ applyTheme(savedTheme === 'dark');
 document.getElementById('themeToggle').addEventListener('click', function() {
   applyTheme(!document.body.classList.contains('dark'));
 });
-renderTodos();
 </script>
 
 
