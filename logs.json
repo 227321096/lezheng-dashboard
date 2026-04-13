@@ -1,0 +1,18 @@
+[
+  {
+    "date": "2026-04-13",
+    "timestamp": "2026-04-13T05:01:00Z",
+    "summary": "健康检查：minimax2 模型仍然不可用；仪表盘每小时同步检测到无文件变更（网络不通，GitHub PAT 已吊销，暂无法推送）",
+    "details": {
+      "cron_dashboard_sync": {
+        "result": "no_changes",
+        "note": "GitHub PAT revoked, push failed"
+      },
+      "cron_healthcheck_model2": {
+        "model": "minimax2/MiniMax-M2.7-highspeed",
+        "result": "unavailable",
+        "message": "2号模型仍然不可用"
+      }
+    }
+  }
+]
